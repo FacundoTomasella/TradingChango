@@ -13,608 +13,545 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #f8f9fa;
-            color: #212529;
-            line-height: 1.6;
-        }
-
-        .app {
-            display: flex;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding: 1rem;
         }
 
-        /* Sidebar */
-        .sidebar {
-            width: 280px;
-            background: #ffffff;
-            border-right: 1px solid #e9ecef;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 100;
-            transition: transform 0.3s ease;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        .sidebar-header {
-            padding: 2rem 1.5rem;
-            border-bottom: 1px solid #e9ecef;
+        .header {
+            text-align: center;
+            color: white;
+            padding: 2rem 1rem;
+            margin-bottom: 2rem;
         }
 
-        .sidebar-header h1 {
-            font-size: 1.25rem;
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .search-box {
+            background: white;
+            border-radius: 50px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .search-box input::placeholder {
+            color: #999;
+        }
+
+        .search-icon {
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+
+        .categories {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .categories::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .categories::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+        }
+
+        .category-chip {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+
+        .category-chip:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .category-chip.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: all 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        }
+
+        .product-header {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 1.5rem;
+            border-bottom: 3px solid #e9ecef;
+        }
+
+        .product-category {
+            display: inline-block;
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .product-name {
+            font-size: 1.3rem;
             font-weight: 700;
             color: #212529;
             margin-bottom: 0.25rem;
         }
 
-        .sidebar-header p {
-            font-size: 0.875rem;
+        .product-brand {
+            font-size: 0.9rem;
             color: #6c757d;
+            font-weight: 500;
         }
 
-        .nav-section {
-            padding: 1rem 0;
+        .product-body {
+            padding: 1.5rem;
         }
 
-        .nav-label {
-            padding: 0.5rem 1.5rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #6c757d;
-        }
-
-        .nav-item {
+        .price-comparison {
             display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .price-item {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            padding: 0.75rem 1.5rem;
-            color: #495057;
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-            cursor: pointer;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 12px;
             transition: all 0.2s;
-            border-left: 3px solid transparent;
         }
 
-        .nav-item:hover {
-            background: #f8f9fa;
-            color: #212529;
+        .price-item:hover {
+            background: #e9ecef;
         }
 
-        .nav-item.active {
-            background: #e7f1ff;
-            color: #0d6efd;
-            border-left-color: #0d6efd;
+        .price-item.best {
+            background: #d9ead3;
+            border: 2px solid #93c47d;
         }
 
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            margin-left: 280px;
-            padding: 2rem;
-        }
-
-        .content-header {
-            margin-bottom: 2rem;
-        }
-
-        .content-header h2 {
-            font-size: 1.75rem;
+        .price-item.best .provider-name {
             font-weight: 700;
-            color: #212529;
-            margin-bottom: 0.5rem;
-        }
-
-        .content-header p {
-            color: #6c757d;
-            font-size: 0.95rem;
-        }
-
-        /* About Section */
-        .about-card {
-            background: white;
-            border-radius: 12px;
-            padding: 2.5rem;
-            border: 1px solid #e9ecef;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        .about-card h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: #212529;
-        }
-
-        .about-card p {
-            color: #495057;
-            margin-bottom: 1rem;
-        }
-
-        .about-card ul {
-            margin-left: 1.5rem;
-            color: #495057;
-        }
-
-        .about-card li {
-            margin-bottom: 0.5rem;
-        }
-
-        .info-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.5rem 1rem;
-            background: #e7f1ff;
-            color: #0d6efd;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            margin-top: 1rem;
-        }
-
-        /* Table */
-        .table-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #e9ecef;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        thead {
-            background: #f8f9fa;
-        }
-
-        th {
-            padding: 1rem 1.5rem;
-            text-align: left;
-            font-weight: 600;
-            color: #495057;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #e9ecef;
-        }
-
-        td {
-            padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid #f1f3f5;
-            color: #212529;
-            font-size: 0.95rem;
-        }
-
-        tbody tr {
-            transition: background 0.2s;
-        }
-
-        tbody tr:hover {
-            background: #f8f9fa;
-        }
-
-        tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        .price-cell {
-            background: #d9ead3 !important;
-            font-weight: 600;
             color: #274e13;
         }
 
-        .price {
+        .price-item.best::before {
+            content: "⭐";
+            margin-right: 0.5rem;
+        }
+
+        .provider-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .provider-name {
             font-weight: 600;
+            color: #495057;
+            font-size: 0.95rem;
+        }
+
+        .price-value {
+            font-size: 1.5rem;
+            font-weight: 700;
             color: #212529;
         }
 
-        .price-normal {
-            color: #6c757d;
+        .price-item.best .price-value {
+            color: #274e13;
         }
 
-        .btn-buy {
-            color: #212529;
-            text-decoration: underline;
-            font-weight: 500;
-            font-size: 0.875rem;
-            transition: color 0.2s;
-            background: none;
-            border: none;
-            padding: 0;
-            cursor: pointer;
+        .buy-link {
+            margin-top: 1rem;
+            text-align: center;
         }
 
-        .btn-buy:hover {
-            color: #0d6efd;
-            text-decoration: underline;
+        .buy-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 2rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .buy-button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .savings-badge {
+            display: inline-block;
+            background: #fff3cd;
+            color: #856404;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 1rem;
         }
 
         .loading {
             text-align: center;
+            color: white;
             padding: 3rem;
-            color: #6c757d;
+            font-size: 1.2rem;
         }
 
         .loading-spinner {
             display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid #e9ecef;
-            border-top-color: #0d6efd;
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top-color: white;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
+            margin-bottom: 1rem;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        /* Mobile */
-        .mobile-menu-btn {
-            display: none;
-            position: fixed;
-            bottom: 1.5rem;
-            right: 1.5rem;
-            width: 56px;
-            height: 56px;
-            background: #0d6efd;
+        .no-results {
+            text-align: center;
             color: white;
-            border: none;
-            border-radius: 50%;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
-            z-index: 101;
+            padding: 3rem;
+            font-size: 1.1rem;
         }
 
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                width: 260px;
+            body {
+                padding: 0.5rem;
             }
 
-            .sidebar.open {
-                transform: translateX(0);
+            .header {
+                padding: 1.5rem 0.5rem;
             }
 
-            .main-content {
-                margin-left: 0;
-                padding: 1rem;
+            .header h1 {
+                font-size: 2rem;
             }
 
-            .mobile-menu-btn {
-                display: flex;
-                align-items: center;
-                justify-content: center;
+            .products-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
             }
 
-            .content-header {
-                margin-bottom: 1.5rem;
+            .product-card {
+                border-radius: 15px;
             }
 
-            .content-header h2 {
-                font-size: 1.25rem;
+            .search-box {
+                padding: 0.75rem 1.25rem;
             }
 
-            .content-header p {
-                font-size: 0.85rem;
+            .categories {
+                gap: 0.5rem;
             }
 
-            table {
-                display: block;
-                overflow-x: auto;
-                white-space: nowrap;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            th, td {
-                padding: 0.75rem;
-                font-size: 0.85rem;
-            }
-
-            th {
-                position: sticky;
-                background: #f8f9fa;
-            }
-
-            .table-card {
-                border-radius: 8px;
-            }
-
-            .about-card {
-                padding: 1.5rem;
-                border-radius: 8px;
-            }
-
-            .sidebar-header {
-                padding: 1.5rem;
-            }
-
-            .sidebar-header h1 {
-                font-size: 1.1rem;
-            }
-
-            .nav-item {
+            .category-chip {
                 padding: 0.65rem 1.25rem;
-                font-size: 0.9rem;
+                font-size: 0.85rem;
             }
-        }
 
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 99;
-        }
+            .product-header {
+                padding: 1.25rem;
+            }
 
-        .overlay.show {
-            display: block;
+            .product-name {
+                font-size: 1.15rem;
+            }
+
+            .price-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .price-value {
+                font-size: 1.3rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="app">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <h1>Comparador</h1>
-                <p>Actualización automática</p>
-            </div>
-            <nav id="navigation"></nav>
-        </aside>
+    <div class="container">
+        <div class="header">
+            <h1>🛒 Comparador de Precios</h1>
+            <p>Encuentra el mejor precio para tus productos</p>
+        </div>
 
-        <!-- Overlay for mobile -->
-        <div class="overlay" id="overlay" onclick="closeMobileMenu()"></div>
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Buscar productos...">
+        </div>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <div class="content-header">
-                <h2 id="page-title">Cargando...</h2>
-                <p id="page-description">Espera un momento mientras cargamos los datos</p>
-            </div>
-            <div id="page-content">
-                <div class="loading">
-                    <div class="loading-spinner"></div>
-                    <p style="margin-top: 1rem;">Cargando datos...</p>
-                </div>
-            </div>
-        </main>
+        <div class="categories" id="categories"></div>
 
-        <!-- Mobile menu button -->
-        <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">
-            ☰
-        </button>
+        <div class="products-grid" id="productsGrid">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <p>Cargando productos...</p>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
         const SHEET_ID = '1cdLUKAFrRUFL2yJgatb7qJH2dO1Hyk1xoPS0um_pwoI';
-        let allData = {};
-        let currentSection = null;
+        let allProducts = [];
+        let currentCategory = 'Todas';
+        let searchTerm = '';
 
-        function toggleMobileMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('show');
-        }
-
-        function closeMobileMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            sidebar.classList.remove('open');
-            overlay.classList.remove('show');
-        }
-
-        async function loadFromGoogleSheets() {
+        async function loadData() {
             try {
                 const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=xlsx`;
                 const response = await fetch(url);
                 const arrayBuffer = await response.arrayBuffer();
                 const workbook = XLSX.read(arrayBuffer, { type: 'array' });
                 
-                processWorkbook(workbook);
+                processData(workbook);
             } catch (error) {
-                console.error('Error cargando datos:', error);
-                document.getElementById('page-content').innerHTML = `
-                    <div class="about-card">
-                        <h3>⚠️ Error al cargar datos</h3>
-                        <p>No se pudieron cargar los datos automáticamente. Por favor, verifica que la hoja de Google esté pública.</p>
+                console.error('Error:', error);
+                document.getElementById('productsGrid').innerHTML = `
+                    <div class="no-results">
+                        <p>⚠️ Error al cargar los datos</p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Verifica que la hoja de Google esté pública</p>
                     </div>
                 `;
             }
         }
 
-        function processWorkbook(workbook) {
-            allData = {};
-            const nav = document.getElementById('navigation');
-            nav.innerHTML = '<div class="nav-label">Categorías</div>';
-
-            workbook.SheetNames.forEach((sheetName, index) => {
-                const sheet = workbook.Sheets[sheetName];
-                const data = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
-                
-                allData[sheetName] = data;
-
-                const navItem = document.createElement('div');
-                navItem.className = 'nav-item';
-                navItem.textContent = sheetName;
-                navItem.onclick = () => showSection(sheetName, navItem);
-                
-                if (index === 0 || sheetName === 'Acerca de') {
-                    navItem.classList.add('active');
-                    currentSection = sheetName;
-                }
-                
-                nav.appendChild(navItem);
-            });
-
-            renderContent();
-        }
-
-        function showSection(sectionName, element) {
-            currentSection = sectionName;
+        function processData(workbook) {
+            // Asumiendo que los datos están en la primera hoja
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            const data = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
             
-            const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach(item => item.classList.remove('active'));
-            element.classList.add('active');
-            
-            renderContent();
-            closeMobileMenu();
-        }
-
-        function renderContent() {
-            const data = allData[currentSection];
-            
-            if (!data) {
-                return;
-            }
-
-            document.getElementById('page-title').textContent = currentSection;
-
-            if (currentSection === 'Setup' || currentSection === 'Acerca de' || currentSection.toLowerCase().includes('acerca')) {
-                document.getElementById('page-description').textContent = 'Información sobre el comparador';
-                renderAboutSection(data);
-            } else {
-                document.getElementById('page-description').textContent = 'Compara precios y encuentra la mejor oferta';
-                renderTableSection(data, currentSection);
-            }
-        }
-
-        function renderAboutSection(data) {
-            const content = document.getElementById('page-content');
-            let html = '<div class="about-card">';
-            html += '<h3>Bienvenido al Comparador de Precios</h3>';
-            
-            data.forEach(row => {
-                if (row[0]) {
-                    html += `<p>${row[0]}</p>`;
-                }
-            });
-            
-            html += `
-                <h3 style="margin-top: 2rem;">¿Cómo funciona?</h3>
-                <ul>
-                    <li>Selecciona una categoría del menú lateral</li>
-                    <li>Revisa la tabla comparativa de precios</li>
-                    <li>El mejor precio aparece destacado en verde con una estrella ★</li>
-                    <li>Haz clic en "Comprar Aquí" para acceder a la tienda</li>
-                </ul>
-                <div class="info-badge">
-                    ⚡ Los precios se actualizan automáticamente desde Google Sheets
-                </div>
-            </div>`;
-            
-            content.innerHTML = html;
-        }
-
-        function renderTableSection(data, categoryName) {
-            const content = document.getElementById('page-content');
-            
-            if (data.length < 2) {
-                content.innerHTML = `
-                    <div class="about-card">
-                        <h3>No hay datos disponibles</h3>
-                        <p>No se encontraron productos para ${categoryName}</p>
-                    </div>
-                `;
-                return;
-            }
-
-            // Obtener headers de la primera fila
+            // Headers en la primera fila: CATEGORIA, PRODUCTO, MARCA, PROVEEDOR, PRECIO, URL
             const headers = data[0];
-            
-            let html = `
-                <div class="table-card">
-                    <div class="table-wrapper">
-                        <table>
-                            <thead><tr>
-            `;
+            const products = {};
 
-            // Renderizar headers dinámicamente
-            headers.forEach((header, idx) => {
-                if (header) {
-                    html += `<th>${header}</th>`;
-                }
-            });
-
-            html += `</tr></thead><tbody>`;
-
-            // Rows - empezar desde la fila 1 (después de headers)
+            // Procesar cada fila
             for (let i = 1; i < data.length; i++) {
                 const row = data[i];
-                if (!row[0]) continue;
+                if (!row[0] || !row[1]) continue; // Saltar filas vacías
 
-                // Extraer precios (asumiendo que están en las columnas del medio, antes de la última que es el link)
-                const prices = [];
-                for (let j = 1; j < row.length - 1; j++) {
-                    const val = parseFloat(String(row[j]).replace(/[^0-9.-]/g, ''));
-                    if (!isNaN(val) && val > 0) {
-                        prices.push({ value: val, index: j });
-                    }
+                const categoria = row[0];
+                const producto = row[1];
+                const marca = row[2] || '';
+                const proveedor = row[3] || '';
+                const precio = parseFloat(String(row[4]).replace(/[^0-9.-]/g, ''));
+                const url = row[5] || '';
+
+                if (isNaN(precio)) continue;
+
+                // Agrupar por producto
+                const key = `${categoria}_${producto}_${marca}`;
+                
+                if (!products[key]) {
+                    products[key] = {
+                        categoria,
+                        producto,
+                        marca,
+                        proveedores: []
+                    };
                 }
 
-                // Encontrar el precio mínimo
-                const minPrice = prices.length > 0 ? Math.min(...prices.map(p => p.value)) : null;
-                const winnerIndex = prices.find(p => p.value === minPrice)?.index;
-
-                html += `<tr>`;
-                
-                // Renderizar cada celda
-                for (let j = 0; j < row.length; j++) {
-                    const cell = row[j];
-                    const cellValue = parseFloat(String(cell).replace(/[^0-9.-]/g, ''));
-                    
-                    // Primera columna (producto)
-                    if (j === 0) {
-                        html += `<td>${cell}</td>`;
-                    }
-                    // Última columna (link)
-                    else if (j === row.length - 1) {
-                        if (cell && cell.toString().startsWith('http')) {
-                            html += `<td><a href="${cell}" class="btn-buy" target="_blank">Comprar aquí</a></td>`;
-                        } else {
-                            html += `<td>-</td>`;
-                        }
-                    }
-                    // Columnas de precios
-                    else {
-                        const isPrice = !isNaN(cellValue) && cellValue > 0;
-                        const isWinner = isPrice && j === winnerIndex;
-                        
-                        if (isPrice) {
-                            html += `<td class="${isWinner ? 'price-cell' : ''}">${cellValue.toFixed(2)}</td>`;
-                        } else {
-                            html += `<td>-</td>`;
-                        }
-                    }
-                }
-                
-                html += '</tr>';
+                products[key].proveedores.push({
+                    proveedor,
+                    precio,
+                    url
+                });
             }
 
-            html += '</tbody></table></div></div>';
-            content.innerHTML = html;
+            // Convertir a array y encontrar mejor precio
+            allProducts = Object.values(products).map(p => {
+                const precios = p.proveedores.map(pr => pr.precio);
+                const minPrecio = Math.min(...precios);
+                const maxPrecio = Math.max(...precios);
+                const ahorro = maxPrecio - minPrecio;
+
+                p.proveedores = p.proveedores.map(pr => ({
+                    ...pr,
+                    isBest: pr.precio === minPrecio
+                }));
+
+                return { ...p, minPrecio, maxPrecio, ahorro };
+            });
+
+            renderCategories();
+            renderProducts();
         }
 
-        // Cargar datos al iniciar
-        loadFromGoogleSheets();
+        function renderCategories() {
+            const categories = ['Todas', ...new Set(allProducts.map(p => p.categoria))];
+            const container = document.getElementById('categories');
+            
+            container.innerHTML = categories.map(cat => `
+                <button class="category-chip ${cat === currentCategory ? 'active' : ''}" 
+                        onclick="filterByCategory('${cat}')">
+                    ${cat}
+                </button>
+            `).join('');
+        }
 
-        // Recargar cada 5 minutos
-        setInterval(loadFromGoogleSheets, 300000);
+        function filterByCategory(category) {
+            currentCategory = category;
+            renderCategories();
+            renderProducts();
+        }
+
+        function renderProducts() {
+            const container = document.getElementById('productsGrid');
+            
+            let filtered = allProducts;
+
+            // Filtrar por categoría
+            if (currentCategory !== 'Todas') {
+                filtered = filtered.filter(p => p.categoria === currentCategory);
+            }
+
+            // Filtrar por búsqueda
+            if (searchTerm) {
+                filtered = filtered.filter(p => 
+                    p.producto.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    p.marca.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <p>No se encontraron productos</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(product => {
+                const bestProvider = product.proveedores.find(p => p.isBest);
+                
+                return `
+                    <div class="product-card">
+                        <div class="product-header">
+                            <div class="product-category">${product.categoria}</div>
+                            <div class="product-name">${product.producto}</div>
+                            ${product.marca ? `<div class="product-brand">${product.marca}</div>` : ''}
+                        </div>
+                        <div class="product-body">
+                            <div class="price-comparison">
+                                ${product.proveedores.map(prov => `
+                                    <div class="price-item ${prov.isBest ? 'best' : ''}">
+                                        <div class="provider-info">
+                                            <span class="provider-name">${prov.proveedor}</span>
+                                        </div>
+                                        <div class="price-value">$${prov.precio.toFixed(2)}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            ${product.ahorro > 0 ? `
+                                <div class="savings-badge">
+                                    💰 Ahorra hasta $${product.ahorro.toFixed(2)}
+                                </div>
+                            ` : ''}
+                            ${bestProvider.url ? `
+                                <div class="buy-link">
+                                    <a href="${bestProvider.url}" target="_blank" class="buy-button">
+                                        🛒 Comprar en ${bestProvider.proveedor}
+                                    </a>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Búsqueda en tiempo real
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchTerm = e.target.value;
+            renderProducts();
+        });
+
+        // Cargar datos al iniciar
+        loadData();
+
+        // Actualizar cada 5 minutos
+        setInterval(loadData, 300000);
     </script>
 </body>
 </html>
