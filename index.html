@@ -407,71 +407,82 @@
                 header: true,
                 complete: function(results) {
                     processData(results.data);
+
                 },
                 error: function(err) {
                     console.error("Error PapaParse:", err);
-                    document.getElementById('productsGrid').innerHTML = `
+                    document.getElementById('productsGrid').innerHTML = 
                         <div class="state-msg">
                             <p>❌ No se pudo cargar la hoja.</p>
                             <small>Verifica que la hoja tenga permisos de lectura.</small>
-                        </div>`;
+                        </div>;
                 }
             });
         }
 
-        function processData(data) {
-            // Agrupar productos por Nombre + Marca para la comparativa
-            const grouped = {};
+        function normalize(str) {
+  return str
+    ?.toString()
+    .trim()
+    .toUpperCase();
+}
 
-            data.forEach(row => {
-                // Normalizar nombres de columnas (quitar espacios extra, mayúsculas)
-                // Tus columnas: CATEGORIA, PRODUCTO, MARCA, PROVEEDOR, PRECIO, URL
-                const producto = row['PRODUCTO'] || row['producto'];
-                const precioRaw = row['PRECIO'] || row['precio'];
-                
-                if (!producto || !precioRaw) return;
+function processData(data) {
+  const grouped = {};
 
-                // Limpiar precio (quitar $, comas, espacios)
-                let precio = parseFloat(String(precioRaw).replace(/[^0-9.,]/g, '').replace(',', '.'));
-                if (isNaN(precio)) return;
+  data.forEach(row => {
+    // Normalizamos claves
+    const keys = {};
+    Object.keys(row).forEach(k => {
+      keys[normalize(k)] = row[k];
+    });
 
-                const marca = row['MARCA'] || row['marca'] || 'Genérico';
-                const categoria = row['CATEGORIA'] || row['categoria'] || 'General';
-                const proveedor = row['PROVEEDOR'] || row['proveedor'] || 'Tienda';
-                const url = row['URL'] || row['url'] || '';
+    const producto = keys['PRODUCTO'];
+    const precioRaw = keys['PRECIO'];
 
-                const key = `${producto.trim().toLowerCase()}-${marca.trim().toLowerCase()}`;
+    if (!producto || !precioRaw) return;
 
-                if (!grouped[key]) {
-                    grouped[key] = {
-                        id: key,
-                        nombre: producto.trim(),
-                        marca: marca.trim(),
-                        categoria: categoria.trim(),
-                        precios: []
-                    };
-                }
+    const precio = parseFloat(
+      precioRaw.toString().replace(/[^0-9.,]/g, '').replace(',', '.')
+    );
+    if (isNaN(precio)) return;
 
-                grouped[key].precios.push({
-                    proveedor: proveedor.trim(),
-                    valor: precio,
-                    link: url
-                });
-            });
+    const marca = keys['MARCA'] || 'Genérico';
+    const categoria = keys['CATEGORIA'] || 'General';
+    const proveedor = keys['PROVEEDOR'] || 'Tienda';
+    const url = keys['URL'] || '';
 
-            // Convertir objeto a array y calcular min/max
-            allProducts = Object.values(grouped).map(p => {
-                // Ordenar precios de menor a mayor
-                p.precios.sort((a, b) => a.valor - b.valor);
-                p.minPrecio = p.precios[0].valor;
-                p.maxPrecio = p.precios[p.precios.length - 1].valor;
-                p.ahorro = p.maxPrecio - p.minPrecio;
-                return p;
-            });
+    const key = `${producto}-${marca}`.toLowerCase();
 
-            renderCategories();
-            renderGrid();
-        }
+    if (!grouped[key]) {
+      grouped[key] = {
+        id: key,
+        nombre: producto,
+        marca,
+        categoria,
+        precios: []
+      };
+    }
+
+    grouped[key].precios.push({
+      proveedor,
+      valor: precio,
+      link: url
+    });
+  });
+
+  allProducts = Object.values(grouped).map(p => {
+    p.precios.sort((a, b) => a.valor - b.valor);
+    p.minPrecio = p.precios[0].valor;
+    p.maxPrecio = p.precios[p.precios.length - 1].valor;
+    p.ahorro = p.maxPrecio - p.minPrecio;
+    return p;
+  });
+
+  renderCategories();
+  renderGrid();
+}
+}
 
         // --- Renderizado ---
 
@@ -578,4 +589,15 @@
 
         // Cerrar modal al tocar fuera
         document.getElementById('productModal').addEventListener('click', (e) => {
-            if (e.target
+            if (e.target.id === 'productModal') closeModal();
+        });
+
+        // Buscador
+        document.getElementById('searchInput').addEventListener('input', renderGrid);
+
+        // Iniciar
+        init();
+
+    </script>
+</body>
+</html>
