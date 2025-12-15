@@ -12,270 +12,391 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #fafafa;
-            color: #1a1a1a;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #212529;
+            line-height: 1.6;
         }
 
-        .header {
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
             background: #ffffff;
-            color: #1a1a1a;
+            border-right: 1px solid #e9ecef;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
             padding: 2rem 1.5rem;
-            text-align: center;
-            border-bottom: 1px solid #e5e5e5;
+            border-bottom: 1px solid #e9ecef;
         }
 
-        .header h1 {
-            font-size: clamp(1.5rem, 5vw, 2rem);
-            margin-bottom: 0.5rem;
+        .sidebar-header h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar-header p {
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+
+        .nav-section {
+            padding: 1rem 0;
+        }
+
+        .nav-label {
+            padding: 0.5rem 1.5rem;
+            font-size: 0.75rem;
             font-weight: 600;
-            letter-spacing: -0.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6c757d;
         }
 
-        .header p {
-            color: #737373;
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: #495057;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: #f8f9fa;
+            color: #212529;
+        }
+
+        .nav-item.active {
+            background: #e7f1ff;
+            color: #0d6efd;
+            border-left-color: #0d6efd;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+        }
+
+        .content-header {
+            margin-bottom: 2rem;
+        }
+
+        .content-header h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 0.5rem;
+        }
+
+        .content-header p {
+            color: #6c757d;
             font-size: 0.95rem;
         }
 
-        .nav {
-            display: flex;
-            overflow-x: auto;
+        /* About Section */
+        .about-card {
             background: white;
-            border-bottom: 1px solid #e5e5e5;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .nav::-webkit-scrollbar {
-            height: 2px;
-        }
-
-        .nav::-webkit-scrollbar-thumb {
-            background: #d4d4d4;
-            border-radius: 10px;
-        }
-
-        .nav button {
-            flex: 0 0 auto;
-            padding: 1rem 1.5rem;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #737373;
-            transition: all 0.2s;
-            white-space: nowrap;
-            border-bottom: 2px solid transparent;
-        }
-
-        .nav button:hover {
-            color: #1a1a1a;
-            background: #fafafa;
-        }
-
-        .nav button.active {
-            color: #1a1a1a;
-            border-bottom: 2px solid #1a1a1a;
-            background: transparent;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem;
-        }
-
-        .section {
-            display: none;
-            animation: fadeIn 0.3s;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .about {
-            background: white;
+            border-radius: 12px;
             padding: 2.5rem;
-            border-radius: 8px;
-            border: 1px solid #e5e5e5;
-            line-height: 1.7;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
-        .about h2 {
-            color: #1a1a1a;
+        .about-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
             margin-bottom: 1rem;
-            font-weight: 600;
-            font-size: 1.5rem;
+            color: #212529;
         }
 
-        .about h3 {
-            color: #1a1a1a;
-            font-weight: 600;
-            font-size: 1.1rem;
+        .about-card p {
+            color: #495057;
+            margin-bottom: 1rem;
         }
 
-        .about p {
-            color: #525252;
+        .about-card ul {
+            margin-left: 1.5rem;
+            color: #495057;
+        }
+
+        .about-card li {
+            margin-bottom: 0.5rem;
+        }
+
+        .info-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: #e7f1ff;
+            color: #0d6efd;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+
+        /* Table */
+        .table-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .table-wrapper {
-            background: white;
-            border-radius: 8px;
-            border: 1px solid #e5e5e5;
-            overflow: hidden;
-            margin-bottom: 1rem;
-        }
-
-        .table-header {
-            background: #fafafa;
-            color: #1a1a1a;
-            padding: 1.25rem 1.5rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border-bottom: 1px solid #e5e5e5;
-        }
-
-        .table-container {
             overflow-x: auto;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 600px;
         }
 
         thead {
-            background: #fafafa;
+            background: #f8f9fa;
         }
 
         th {
-            padding: 1rem 1.25rem;
+            padding: 1rem 1.5rem;
             text-align: left;
             font-weight: 600;
-            color: #525252;
-            font-size: 0.85rem;
+            color: #495057;
+            font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border-bottom: 1px solid #e5e5e5;
+            border-bottom: 2px solid #e9ecef;
         }
 
         td {
-            padding: 1rem 1.25rem;
-            border-bottom: 1px solid #f5f5f5;
-            color: #1a1a1a;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #f1f3f5;
+            color: #212529;
+            font-size: 0.95rem;
         }
 
-        tr:hover {
-            background: #fafafa;
+        tbody tr {
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
         }
 
         .winner {
-            background: #f0fdf4 !important;
+            background: #d1f4e0 !important;
         }
 
         .winner:hover {
-            background: #dcfce7 !important;
+            background: #b8f0d0 !important;
+        }
+
+        .winner td:first-child {
+            font-weight: 600;
+            color: #0a8754;
         }
 
         .winner td:first-child::before {
-            content: "⭐ ";
+            content: "★ ";
+            color: #0a8754;
         }
 
         .price {
             font-weight: 700;
-            font-size: 1.05rem;
-            color: #16a34a;
+            font-size: 1.1rem;
+            color: #0a8754;
+        }
+
+        .price-normal {
+            color: #6c757d;
         }
 
         .btn-buy {
             display: inline-block;
-            padding: 0.5rem 1.25rem;
-            background: #1a1a1a;
+            padding: 0.625rem 1.5rem;
+            background: #0d6efd;
             color: white;
             text-decoration: none;
-            border-radius: 6px;
-            font-weight: 500;
-            transition: all 0.2s;
+            border-radius: 8px;
+            font-weight: 600;
             font-size: 0.875rem;
+            transition: all 0.2s;
+            text-align: center;
         }
 
         .btn-buy:hover {
-            background: #404040;
+            background: #0b5ed7;
             transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.25);
         }
 
         .loading {
             text-align: center;
-            padding: 2rem;
-            color: #999;
+            padding: 3rem;
+            color: #6c757d;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e9ecef;
+            border-top-color: #0d6efd;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Mobile */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            width: 56px;
+            height: 56px;
+            background: #0d6efd;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+            z-index: 101;
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 0.5rem;
+            .sidebar {
+                transform: translateX(-100%);
             }
 
-            table {
-                font-size: 0.85rem;
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .content-header h2 {
+                font-size: 1.5rem;
             }
 
             th, td {
-                padding: 0.7rem 0.5rem;
+                padding: 0.75rem 1rem;
+                font-size: 0.875rem;
             }
 
-            .nav button {
-                padding: 1rem;
-                font-size: 0.85rem;
+            .table-card {
+                border-radius: 8px;
             }
+
+            .about-card {
+                padding: 1.5rem;
+            }
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99;
+        }
+
+        .overlay.show {
+            display: block;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Comparador de Precios</h1>
-        <p>Encuentra los mejores precios actualizados</p>
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1>Comparador</h1>
+                <p>Actualización automática</p>
+            </div>
+            <nav id="navigation"></nav>
+        </aside>
+
+        <!-- Overlay for mobile -->
+        <div class="overlay" id="overlay" onclick="closeMobileMenu()"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h2 id="page-title">Cargando...</h2>
+                <p id="page-description">Espera un momento mientras cargamos los datos</p>
+            </div>
+            <div id="page-content">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p style="margin-top: 1rem;">Cargando datos...</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Mobile menu button -->
+        <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+            ☰
+        </button>
     </div>
-
-    <nav class="nav" id="nav"></nav>
-
-    <div class="container" id="content"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
         const SHEET_ID = '1cdLUKAFrRUFL2yJgatb7qJH2dO1Hyk1xoPS0um_pwoI';
         let allData = {};
-        let currentSection = 'acerca-de';
+        let currentSection = null;
 
-        const categoryIcons = {
-            'Setup': '',
-            'Acerca de': '',
-            'Carniceria': '',
-            'Verduleria': '',
-            'Fiambres y Lacteos': '',
-            'Higuiene': '',
-            'Almacen': '',
-            'Dietetica': '',
-            'Mascotas': ''
-        };
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('show');
+        }
 
-        async function loadExcelFile() {
-            try {
-                const response = await fetch('Comparador de Precios 5.xlsx');
-                const arrayBuffer = await response.arrayBuffer();
-                const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-                
-                processWorkbook(workbook);
-            } catch (error) {
-                console.log('No se pudo cargar el archivo local, intentando con Google Sheets...');
-                loadFromGoogleSheets();
-            }
+        function closeMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('show');
         }
 
         async function loadFromGoogleSheets() {
@@ -288,9 +409,9 @@
                 processWorkbook(workbook);
             } catch (error) {
                 console.error('Error cargando datos:', error);
-                document.getElementById('content').innerHTML = `
-                    <div class="about">
-                        <h2>⚠️ Error al cargar datos</h2>
+                document.getElementById('page-content').innerHTML = `
+                    <div class="about-card">
+                        <h3>⚠️ Error al cargar datos</h3>
                         <p>No se pudieron cargar los datos automáticamente. Por favor, verifica que la hoja de Google esté pública.</p>
                     </div>
                 `;
@@ -299,8 +420,8 @@
 
         function processWorkbook(workbook) {
             allData = {};
-            const nav = document.getElementById('nav');
-            nav.innerHTML = '';
+            const nav = document.getElementById('navigation');
+            nav.innerHTML = '<div class="nav-label">Categorías</div>';
 
             workbook.SheetNames.forEach((sheetName, index) => {
                 const sheet = workbook.Sheets[sheetName];
@@ -308,51 +429,55 @@
                 
                 allData[sheetName] = data;
 
-                const button = document.createElement('button');
-                button.textContent = sheetName;
-                button.onclick = () => showSection(sheetName);
+                const navItem = document.createElement('div');
+                navItem.className = 'nav-item';
+                navItem.textContent = sheetName;
+                navItem.onclick = () => showSection(sheetName, navItem);
                 
                 if (index === 0 || sheetName === 'Acerca de') {
-                    button.classList.add('active');
+                    navItem.classList.add('active');
                     currentSection = sheetName;
                 }
                 
-                nav.appendChild(button);
+                nav.appendChild(navItem);
             });
 
             renderContent();
         }
 
-        function showSection(sectionName) {
+        function showSection(sectionName, element) {
             currentSection = sectionName;
             
-            const buttons = document.querySelectorAll('.nav button');
-            buttons.forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
             
             renderContent();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            closeMobileMenu();
         }
 
         function renderContent() {
-            const content = document.getElementById('content');
             const data = allData[currentSection];
             
             if (!data) {
-                content.innerHTML = '<div class="loading">Cargando...</div>';
                 return;
             }
 
+            document.getElementById('page-title').textContent = currentSection;
+
             if (currentSection === 'Setup' || currentSection === 'Acerca de' || currentSection.toLowerCase().includes('acerca')) {
+                document.getElementById('page-description').textContent = 'Información sobre el comparador';
                 renderAboutSection(data);
             } else {
+                document.getElementById('page-description').textContent = 'Compara precios y encuentra la mejor oferta';
                 renderTableSection(data, currentSection);
             }
         }
 
         function renderAboutSection(data) {
-            const content = document.getElementById('content');
-            let html = '<div class="about"><h2>Acerca de Este Comparador</h2>';
+            const content = document.getElementById('page-content');
+            let html = '<div class="about-card">';
+            html += '<h3>Bienvenido al Comparador de Precios</h3>';
             
             data.forEach(row => {
                 if (row[0]) {
@@ -361,38 +486,37 @@
             });
             
             html += `
-                <br>
-                <h3>¿Cómo funciona?</h3>
-                <ul style="margin-left: 1.5rem; margin-top: 0.5rem; line-height: 2;">
-                    <li>Navega por las categorías usando el menú superior</li>
+                <h3 style="margin-top: 2rem;">¿Cómo funciona?</h3>
+                <ul>
+                    <li>Selecciona una categoría del menú lateral</li>
                     <li>Revisa la tabla comparativa de precios</li>
-                    <li>El producto ganador (menor precio) está destacado en verde</li>
-                    <li>Haz clic en "Comprar Aquí" para ir directo al sitio del vendedor</li>
+                    <li>El mejor precio aparece destacado en verde con una estrella ★</li>
+                    <li>Haz clic en "Comprar Aquí" para acceder a la tienda</li>
                 </ul>
-                <br>
-                <p style="color: #737373; font-weight: 500;">💡 Los precios se actualizan automáticamente desde Google Sheets</p>
+                <div class="info-badge">
+                    ⚡ Los precios se actualizan automáticamente desde Google Sheets
+                </div>
             </div>`;
             
             content.innerHTML = html;
         }
 
         function renderTableSection(data, categoryName) {
-            const content = document.getElementById('content');
+            const content = document.getElementById('page-content');
             
             if (data.length < 2) {
                 content.innerHTML = `
-                    <div class="about">
-                        <h2>No hay datos disponibles para ${categoryName}</h2>
+                    <div class="about-card">
+                        <h3>No hay datos disponibles</h3>
+                        <p>No se encontraron productos para ${categoryName}</p>
                     </div>
                 `;
                 return;
             }
 
-            const icon = categoryIcons[categoryName] || '';
             let html = `
-                <div class="table-wrapper">
-                    <div class="table-header">${categoryName}</div>
-                    <div class="table-container">
+                <div class="table-card">
+                    <div class="table-wrapper">
                         <table>
                             <thead><tr>
                                 <th>Producto</th>
@@ -400,7 +524,8 @@
                                 <th>Precio 2</th>
                                 <th>Precio 3</th>
                                 <th>Mejor Oferta</th>
-                            </tr></thead><tbody>
+                            </tr></thead>
+                            <tbody>
             `;
 
             // Rows
@@ -428,30 +553,30 @@
                 
                 // Precio 1
                 if (!isNaN(precio1) && precio1 > 0) {
-                    html += `<td${winnerIdx === 1 ? ' class="price"' : ''}>${precio1.toFixed(2)}</td>`;
+                    html += `<td class="${winnerIdx === 1 ? 'price' : 'price-normal'}">$${precio1.toFixed(2)}</td>`;
                 } else {
-                    html += `<td>-</td>`;
+                    html += `<td class="price-normal">-</td>`;
                 }
 
                 // Precio 2
                 if (!isNaN(precio2) && precio2 > 0) {
-                    html += `<td${winnerIdx === 2 ? ' class="price"' : ''}>${precio2.toFixed(2)}</td>`;
+                    html += `<td class="${winnerIdx === 2 ? 'price' : 'price-normal'}">$${precio2.toFixed(2)}</td>`;
                 } else {
-                    html += `<td>-</td>`;
+                    html += `<td class="price-normal">-</td>`;
                 }
 
                 // Precio 3
                 if (!isNaN(precio3) && precio3 > 0) {
-                    html += `<td${winnerIdx === 3 ? ' class="price"' : ''}>${precio3.toFixed(2)}</td>`;
+                    html += `<td class="${winnerIdx === 3 ? 'price' : 'price-normal'}">$${precio3.toFixed(2)}</td>`;
                 } else {
-                    html += `<td>-</td>`;
+                    html += `<td class="price-normal">-</td>`;
                 }
 
                 // Link de compra
                 if (link && link.toString().startsWith('http')) {
                     html += `<td><a href="${link}" class="btn-buy" target="_blank">Comprar Aquí</a></td>`;
                 } else {
-                    html += `<td>-</td>`;
+                    html += `<td class="price-normal">-</td>`;
                 }
                 
                 html += '</tr>';
