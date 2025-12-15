@@ -12,38 +12,45 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #f5f5f5;
-            color: #333;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1.5rem;
+            background: #ffffff;
+            color: #1a1a1a;
+            padding: 2rem 1.5rem;
             text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-bottom: 1px solid #e5e5e5;
         }
 
         .header h1 {
-            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            font-size: clamp(1.5rem, 5vw, 2rem);
             margin-bottom: 0.5rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            color: #737373;
+            font-size: 0.95rem;
         }
 
         .nav {
             display: flex;
             overflow-x: auto;
             background: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-bottom: 1px solid #e5e5e5;
             -webkit-overflow-scrolling: touch;
         }
 
         .nav::-webkit-scrollbar {
-            height: 3px;
+            height: 2px;
         }
 
         .nav::-webkit-scrollbar-thumb {
-            background: #667eea;
+            background: #d4d4d4;
             border-radius: 10px;
         }
 
@@ -51,23 +58,25 @@
             flex: 0 0 auto;
             padding: 1rem 1.5rem;
             border: none;
-            background: white;
+            background: transparent;
             cursor: pointer;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 500;
-            color: #666;
-            transition: all 0.3s;
+            color: #737373;
+            transition: all 0.2s;
             white-space: nowrap;
+            border-bottom: 2px solid transparent;
         }
 
         .nav button:hover {
-            background: #f0f0f0;
+            color: #1a1a1a;
+            background: #fafafa;
         }
 
         .nav button.active {
-            color: #667eea;
-            border-bottom: 3px solid #667eea;
-            background: #f8f9ff;
+            color: #1a1a1a;
+            border-bottom: 2px solid #1a1a1a;
+            background: transparent;
         }
 
         .container {
@@ -92,31 +101,44 @@
 
         .about {
             background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            line-height: 1.6;
+            padding: 2.5rem;
+            border-radius: 8px;
+            border: 1px solid #e5e5e5;
+            line-height: 1.7;
         }
 
         .about h2 {
-            color: #667eea;
+            color: #1a1a1a;
             margin-bottom: 1rem;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .about h3 {
+            color: #1a1a1a;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .about p {
+            color: #525252;
         }
 
         .table-wrapper {
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            border: 1px solid #e5e5e5;
             overflow: hidden;
             margin-bottom: 1rem;
         }
 
         .table-header {
-            background: #667eea;
-            color: white;
-            padding: 1rem;
-            font-size: 1.2rem;
+            background: #fafafa;
+            color: #1a1a1a;
+            padding: 1.25rem 1.5rem;
+            font-size: 1.1rem;
             font-weight: 600;
+            border-bottom: 1px solid #e5e5e5;
         }
 
         .table-container {
@@ -130,58 +152,63 @@
         }
 
         thead {
-            background: #f8f9ff;
+            background: #fafafa;
         }
 
         th {
-            padding: 1rem;
+            padding: 1rem 1.25rem;
             text-align: left;
             font-weight: 600;
-            color: #667eea;
-            font-size: 0.9rem;
+            color: #525252;
+            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            border-bottom: 1px solid #e5e5e5;
         }
 
         td {
-            padding: 1rem;
-            border-bottom: 1px solid #eee;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid #f5f5f5;
+            color: #1a1a1a;
         }
 
         tr:hover {
-            background: #f8f9ff;
+            background: #fafafa;
         }
 
         .winner {
-            background: #d4edda !important;
+            background: #f0fdf4 !important;
+        }
+
+        .winner:hover {
+            background: #dcfce7 !important;
         }
 
         .winner td:first-child::before {
-            content: "👑 ";
+            content: "⭐ ";
         }
 
         .price {
             font-weight: 700;
-            font-size: 1.1rem;
-            color: #28a745;
+            font-size: 1.05rem;
+            color: #16a34a;
         }
 
         .btn-buy {
             display: inline-block;
-            padding: 0.5rem 1rem;
-            background: #667eea;
+            padding: 0.5rem 1.25rem;
+            background: #1a1a1a;
             color: white;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 6px;
             font-weight: 500;
-            transition: all 0.3s;
-            font-size: 0.9rem;
+            transition: all 0.2s;
+            font-size: 0.875rem;
         }
 
         .btn-buy:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+            background: #404040;
+            transform: translateY(-1px);
         }
 
         .loading {
@@ -212,8 +239,8 @@
 </head>
 <body>
     <div class="header">
-        <h1>🛒 Comparador de Precios</h1>
-        <p>Encuentra los mejores precios en un solo lugar</p>
+        <h1>Comparador de Precios</h1>
+        <p>Encuentra los mejores precios actualizados</p>
     </div>
 
     <nav class="nav" id="nav"></nav>
@@ -227,15 +254,15 @@
         let currentSection = 'acerca-de';
 
         const categoryIcons = {
-            'Setup': '⚙️',
-            'Acerca de': '📋',
-            'Carniceria': '🥩',
-            'Verduleria': '🥬',
-            'Fiambres y Lacteos': '🧀',
-            'Higuiene': '🧼',
-            'Almacen': '🏪',
-            'Dietetica': '🥗',
-            'Mascotas': '🐾'
+            'Setup': '',
+            'Acerca de': '',
+            'Carniceria': '',
+            'Verduleria': '',
+            'Fiambres y Lacteos': '',
+            'Higuiene': '',
+            'Almacen': '',
+            'Dietetica': '',
+            'Mascotas': ''
         };
 
         async function loadExcelFile() {
@@ -282,8 +309,7 @@
                 allData[sheetName] = data;
 
                 const button = document.createElement('button');
-                const icon = categoryIcons[sheetName] || '📦';
-                button.textContent = `${icon} ${sheetName}`;
+                button.textContent = sheetName;
                 button.onclick = () => showSection(sheetName);
                 
                 if (index === 0 || sheetName === 'Acerca de') {
@@ -326,7 +352,7 @@
 
         function renderAboutSection(data) {
             const content = document.getElementById('content');
-            let html = '<div class="about"><h2>📋 Acerca de Este Comparador</h2>';
+            let html = '<div class="about"><h2>Acerca de Este Comparador</h2>';
             
             data.forEach(row => {
                 if (row[0]) {
@@ -340,11 +366,11 @@
                 <ul style="margin-left: 1.5rem; margin-top: 0.5rem; line-height: 2;">
                     <li>Navega por las categorías usando el menú superior</li>
                     <li>Revisa la tabla comparativa de precios</li>
-                    <li>El producto ganador (menor precio) está destacado en verde con 👑</li>
-                    <li>Haz clic en "Comprar" para ir directo al sitio del vendedor</li>
+                    <li>El producto ganador (menor precio) está destacado en verde</li>
+                    <li>Haz clic en "Comprar Aquí" para ir directo al sitio del vendedor</li>
                 </ul>
                 <br>
-                <p style="color: #667eea; font-weight: 600;">💡 Consejo: Desliza las tablas horizontalmente en móvil para ver toda la información</p>
+                <p style="color: #737373; font-weight: 500;">💡 Los precios se actualizan automáticamente desde Google Sheets</p>
             </div>`;
             
             content.innerHTML = html;
@@ -362,54 +388,70 @@
                 return;
             }
 
-            const icon = categoryIcons[categoryName] || '📦';
+            const icon = categoryIcons[categoryName] || '';
             let html = `
                 <div class="table-wrapper">
-                    <div class="table-header">${icon} ${categoryName}</div>
+                    <div class="table-header">${categoryName}</div>
                     <div class="table-container">
                         <table>
                             <thead><tr>
+                                <th>Producto</th>
+                                <th>Precio 1</th>
+                                <th>Precio 2</th>
+                                <th>Precio 3</th>
+                                <th>Mejor Oferta</th>
+                            </tr></thead><tbody>
             `;
-
-            // Headers
-            const headers = data[0];
-            headers.forEach(header => {
-                if (header) html += `<th>${header}</th>`;
-            });
-            html += '</tr></thead><tbody>';
 
             // Rows
             for (let i = 1; i < data.length; i++) {
                 const row = data[i];
                 if (!row[0]) continue;
 
-                // Encontrar columnas de precios (asumiendo que son numéricas)
+                const producto = row[0];
+                const precio1 = parseFloat(String(row[1]).replace(/[^0-9.-]/g, ''));
+                const precio2 = parseFloat(String(row[2]).replace(/[^0-9.-]/g, ''));
+                const precio3 = parseFloat(String(row[3]).replace(/[^0-9.-]/g, ''));
+                const link = row[4];
+
+                // Encontrar el precio mínimo
                 const prices = [];
-                for (let j = 1; j < row.length - 1; j++) {
-                    const val = parseFloat(String(row[j]).replace(/[^0-9.-]/g, ''));
-                    if (!isNaN(val) && val > 0) {
-                        prices.push({ index: j, value: val });
-                    }
+                if (!isNaN(precio1) && precio1 > 0) prices.push({ val: precio1, idx: 1 });
+                if (!isNaN(precio2) && precio2 > 0) prices.push({ val: precio2, idx: 2 });
+                if (!isNaN(precio3) && precio3 > 0) prices.push({ val: precio3, idx: 3 });
+
+                const minPrice = prices.length > 0 ? Math.min(...prices.map(p => p.val)) : null;
+                const winnerIdx = prices.find(p => p.val === minPrice)?.idx;
+
+                html += `<tr${minPrice ? ' class="winner"' : ''}>`;
+                html += `<td>${producto}</td>`;
+                
+                // Precio 1
+                if (!isNaN(precio1) && precio1 > 0) {
+                    html += `<td${winnerIdx === 1 ? ' class="price"' : ''}>${precio1.toFixed(2)}</td>`;
+                } else {
+                    html += `<td>-</td>`;
                 }
 
-                const minPrice = prices.length > 0 ? Math.min(...prices.map(p => p.value)) : null;
-                const hasWinner = minPrice !== null;
+                // Precio 2
+                if (!isNaN(precio2) && precio2 > 0) {
+                    html += `<td${winnerIdx === 2 ? ' class="price"' : ''}>${precio2.toFixed(2)}</td>`;
+                } else {
+                    html += `<td>-</td>`;
+                }
 
-                html += `<tr${hasWinner ? ' class="winner"' : ''}>`;
-                
-                for (let j = 0; j < row.length; j++) {
-                    const cell = row[j];
-                    const cellValue = parseFloat(String(cell).replace(/[^0-9.-]/g, ''));
-                    const isPrice = !isNaN(cellValue) && cellValue > 0 && j > 0 && j < row.length - 1;
-                    const isMinPrice = isPrice && cellValue === minPrice;
-                    
-                    if (j === row.length - 1 && cell && cell.toString().startsWith('http')) {
-                        html += `<td><a href="${cell}" class="btn-buy" target="_blank">Comprar</a></td>`;
-                    } else if (isPrice) {
-                        html += `<td${isMinPrice ? ' class="price"' : ''}>$${cellValue.toFixed(2)}</td>`;
-                    } else {
-                        html += `<td>${cell || '-'}</td>`;
-                    }
+                // Precio 3
+                if (!isNaN(precio3) && precio3 > 0) {
+                    html += `<td${winnerIdx === 3 ? ' class="price"' : ''}>${precio3.toFixed(2)}</td>`;
+                } else {
+                    html += `<td>-</td>`;
+                }
+
+                // Link de compra
+                if (link && link.toString().startsWith('http')) {
+                    html += `<td><a href="${link}" class="btn-buy" target="_blank">Comprar Aquí</a></td>`;
+                } else {
+                    html += `<td>-</td>`;
                 }
                 
                 html += '</tr>';
