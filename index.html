@@ -4,10 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Comparador de Precios</title>
+    
+    <!-- Fuente Google Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --primary: #10b981; --bg: #f3f4f6; --text: #1f2937; --border: #e5e7eb; --header-bg: #ffffff; }
+        :root {
+            --primary: #10b981; /* Verde esmeralda */
+            --bg: #f3f4f6;
+            --text: #1f2937;
+            --border: #e5e7eb;
+            --header-bg: #ffffff;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        
         body { background: var(--bg); color: var(--text); padding-bottom: 30px; }
 
         /* HEADER */
@@ -17,27 +28,35 @@
         }
         h1 { font-size: 1.2rem; margin-bottom: 10px; color: #064e3b; }
         
-        /* SEARCH */
+        /* BUSCADOR */
         #searchInput {
             width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #d1d5db;
             background: #f9fafb; font-size: 16px; outline: none;
+            transition: 0.3s;
         }
+        #searchInput:focus { border-color: var(--primary); background: #fff; }
 
-        /* CATEGORY TABS */
+        /* BOTONES DE CATEGORÍA */
         .tabs-container {
-            overflow-x: auto; white-space: nowrap; padding: 10px 15px;
+            overflow-x: auto; white-space: nowrap; padding: 12px 15px;
             background: var(--bg); -webkit-overflow-scrolling: touch;
             border-bottom: 1px solid var(--border);
+            scrollbar-width: none; /* Ocultar scrollbar Firefox */
         }
+        .tabs-container::-webkit-scrollbar { display: none; /* Ocultar scrollbar Chrome */ }
+
         .tab-btn {
             display: inline-block; padding: 8px 16px; margin-right: 8px;
             background: #fff; border: 1px solid #d1d5db; border-radius: 20px;
             font-size: 14px; font-weight: 600; color: #4b5563; cursor: pointer;
-            transition: 0.2s; user-select: none;
+            transition: all 0.2s; user-select: none;
         }
-        .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .tab-btn.active {
+            background: var(--primary); color: white; border-color: var(--primary);
+            box-shadow: 0 2px 5px rgba(16, 185, 129, 0.3);
+        }
 
-        /* TABLE CONTAINER */
+        /* CONTENEDOR DE TABLA */
         .table-wrapper {
             margin: 15px; background: white; border-radius: 12px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden;
@@ -45,45 +64,53 @@
             position: relative;
         }
         
-        /* TABLE STYLES */
+        /* SCROLL HORIZONTAL TABLA */
         .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
         
-        table { width: 100%; border-collapse: collapse; min-width: 600px; /* Force scroll on mobile */ }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
         
-        th, td { padding: 12px 15px; text-align: center; border-bottom: 1px solid var(--border); font-size: 14px; }
+        th, td { padding: 12px 15px; text-align: center; border-bottom: 1px solid var(--border); font-size: 14px; vertical-align: middle; }
         
-        th { background: #f9fafb; font-weight: 600; color: #374151; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+        th { background: #f9fafb; font-weight: 700; color: #374151; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; height: 50px; }
         
-        /* Sticky First Column (Product Name) */
+        /* COLUMNA FIJA (PRODUCTO) */
         th:first-child, td:first-child {
             position: sticky; left: 0; z-index: 10;
             background: white; text-align: left; font-weight: 700;
             border-right: 2px solid #f3f4f6;
             min-width: 140px; max-width: 180px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.02);
         }
         th:first-child { background: #f9fafb; z-index: 20; }
 
-        /* Prices */
-        .price-cell { font-family: monospace; font-size: 15px; color: #4b5563; }
-        .best-price { background-color: #d1fae5; color: #047857; font-weight: 800; border-radius: 6px; padding: 4px 8px; }
-        .no-stock { color: #ef4444; font-size: 12px; font-style: italic; }
-
-        /* Loader */
-        #loader { text-align: center; padding: 40px; color: #6b7280; }
+        /* PRECIOS */
+        .price-cell { font-family: 'Inter', monospace; font-size: 14px; color: #4b5563; white-space: nowrap; }
         
-        /* Link styles */
-        a.product-link { text-decoration: none; color: inherit; }
+        .best-price { 
+            background-color: #d1fae5; color: #065f46; 
+            font-weight: 800; border-radius: 6px; padding: 4px 8px; 
+            display: inline-block; border: 1px solid #a7f3d0;
+        }
+        
+        .no-stock { color: #ef4444; font-size: 11px; font-style: italic; }
+
+        /* LOADING */
+        #loader { text-align: center; padding: 40px; color: #6b7280; font-weight: 500; }
+        
+        /* LINK EXTERNO */
+        .link-icon { text-decoration: none; font-size: 12px; color: #3b82f6; }
+
     </style>
 </head>
 <body>
 
     <header>
-        <h1>🛒 Comparador Precios</h1>
-        <input type="text" id="searchInput" placeholder="Buscar producto...">
+        <h1>🛒 Comparador de Precios</h1>
+        <input type="text" id="searchInput" placeholder="🔍 Buscar producto (ej: Asado, Pollo)...">
     </header>
 
     <div class="tabs-container" id="tabsContainer">
-        <!-- Los botones se generan aquí -->
+        <!-- Los botones de categorías se generan aquí automáticamente -->
     </div>
 
     <div id="loader">Cargando datos...</div>
@@ -99,31 +126,37 @@
 
     <script>
         // ==========================================
-        // ⚙️ CONFIGURACIÓN IMPORTANTE
+        // ⚙️ CONFIGURACIÓN ACTUALIZADA CON TUS LINKS
         // ==========================================
-        // Tu ID de hoja general (Key)
+        
         const SHEET_KEY = '2PACX-1vR6UTln-nhhZCArBfy7FzU2CO1jel87qmlBquCFWYDmson-uoJeD_Q22K5Yiq6l48rZF71cjhERzAZf';
         
-        // AQUÍ DEBES PONER LOS GID DE CADA PESTAÑA
-        // Si no sabes el GID, ve a tu hoja, entra a la pestaña y mira la URL (gid=XXXX)
         const CATEGORIAS = [
-            { name: "Carnicería", gid: "1159450908" }, // Reemplaza con el GID real de Carniceria
-            { name: "Verdulería", gid: "0" },          // Reemplaza con el GID real
-            { name: "Almacén", gid: "123456" },        // Reemplaza...
-            { name: "Dietética", gid: "789012" },      // Reemplaza...
-            { name: "Mascotas", gid: "345678" }        // Reemplaza...
+            { name: "Carnicería", gid: "1330431075" },
+            { name: "Verdulería", gid: "0" },
+            { name: "Fiambres y Lácteos", gid: "279587113" },
+            { name: "Higiene", gid: "206948588" },
+            { name: "Almacén", gid: "229337357" },
+            { name: "Dietética", gid: "1226047194" },
+            { name: "Mascotas", gid: "501420257" }
         ];
+
+        // Definimos dónde están los precios en tu Google Sheet (Indices de columna comenzando en 0)
+        // A=0 (Nombre), B=1 (Link), ... 
+        // Según tu script: F(5), G(6), H(7), I(8), K(10) son los precios.
+        const PRICE_INDICES = [5, 6, 7, 8, 10]; 
+
+        // ==========================================
+        // LÓGICA DE LA APP
+        // ==========================================
 
         let currentData = [];
 
-        // 1. Inicializar
         async function init() {
             renderTabs();
-            // Cargamos la primera categoría por defecto
-            await loadCategory(CATEGORIAS[0]);
+            await loadCategory(CATEGORIAS[0]); // Cargar la primera categoría al inicio
         }
 
-        // 2. Crear Botones de Categoría
         function renderTabs() {
             const container = document.getElementById('tabsContainer');
             container.innerHTML = '';
@@ -140,13 +173,16 @@
             });
         }
 
-        // 3. Cargar Datos de la Hoja Seleccionada
         async function loadCategory(category) {
-            document.getElementById('loader').style.display = 'block';
-            document.getElementById('tableHead').innerHTML = '';
-            document.getElementById('tableBody').innerHTML = '';
+            const loader = document.getElementById('loader');
+            const thead = document.getElementById('tableHead');
+            const tbody = document.getElementById('tableBody');
             
-            // Construir URL del CSV específico de esa pestaña (GID)
+            loader.style.display = 'block';
+            thead.innerHTML = '';
+            tbody.innerHTML = '';
+            
+            // Link de exportación CSV
             const url = `https://docs.google.com/spreadsheets/d/e/${SHEET_KEY}/pub?gid=${category.gid}&single=true&output=csv`;
 
             try {
@@ -155,154 +191,92 @@
                 const rows = parseCSV(csvText);
 
                 if (rows.length < 2) {
-                    document.getElementById('loader').innerText = "Hoja vacía o error de GID";
+                    loader.innerText = "No hay datos en esta categoría.";
                     return;
                 }
 
-                // PROCESAR ENCABEZADOS (Fila 0)
-                // Asumimos estructura: A=Producto, B,C,D,E... = Tiendas con Links (ignoramos), F,G,H... = Precios
-                // PERO, para hacerlo dinámico según tu imagen, vamos a detectar columnas de PRECIOS.
-                
-                // Tu imagen muestra: Producto | Coto | Carrefour | Dia | Jumbo | Res | Ganador
-                // El script necesita saber cuáles columnas son precios para compararlos.
-                // Asumiremos que desde la columna 1 hasta la anteúltima son tiendas.
-                
-                const headers = rows[0]; 
-                
-                // Identificar índices
-                // Asumimos: Col 0 es Nombre.
-                // Buscamos columnas que parezcan precios o tiendas.
-                // Para simplificar: En tu hoja de Carniceria, Col B,C,D,E,F son links? O son los precios ya?
-                // Según tu script anterior, los precios se escriben en F, G, H, I, K.
-                
-                // ESTRATEGIA VISUAL: Vamos a renderizar las columnas que tengan precios.
-                // En tu hoja final (la de la imagen), ya tienes los precios "limpios" en un rango continuo?
-                // Si la imagen que me pasaste es la hoja final:
-                // Col A: Producto
-                // Col B: Coto ($)
-                // Col C: Carrefour ($)
-                // ...
-                
-                // Renderizar Tabla
-                renderTable(headers, rows.slice(1));
-                
+                renderTable(rows);
             } catch (error) {
                 console.error(error);
-                document.getElementById('loader').innerText = "Error de conexión";
+                loader.innerText = "Error cargando los precios. Intenta recargar.";
             } finally {
-                document.getElementById('loader').style.display = 'none';
+                loader.style.display = 'none';
             }
         }
 
-        // 4. Renderizar Tabla con Lógica de Precios
-        function renderTable(headers, data) {
+        function renderTable(rows) {
             const thead = document.getElementById('tableHead');
             const tbody = document.getElementById('tableBody');
-            currentData = data; // Guardamos para el buscador
+            const headers = rows[0]; // Fila de encabezados
+            currentData = rows.slice(1); // Datos sin encabezado
 
-            // Generar Encabezados
-            // Ocultamos columnas irrelevantes si las hubiera (ej: links crudos)
-            // Mostraremos: Producto y las columnas siguientes que sean tiendas.
+            // --- 1. RENDERIZAR ENCABEZADOS ---
+            let headHtml = '<tr>';
+            headHtml += `<th>${headers[0]}</th>`; // Producto
             
-            // Definimos qué columnas mostrar. Asumimos:
-            // 0 = Producto (Fijo)
-            // 5, 6, 7, 8, 10 = Son las columnas donde tu script escribe precios (F, G, H, I, K)
-            // Si has reorganizado la hoja para que se vea como la foto, ajusta estos índices.
-            // SI LA HOJA YA SE VE COMO LA FOTO:
-            // Usamos todas las columnas visibles.
-            
-            // Voy a asumir que en la hoja "Pública" (la que ve la web) ya ordenaste las columnas para que queden juntas.
-            // Si no, usaremos los indices del script: 5,6,7,8,10
-            
-            let rowHtml = '<tr>';
-            // Encabezado Producto
-            rowHtml += `<th>${headers[0]}</th>`;
-            
-            // Encabezados Tiendas (Indices 5,6,7,8,10 basados en tu script anterior)
-            // Si la hoja ya está ordenada (A=Prod, B=Coto, C=Carr...), usa indices 1,2,3...
-            // VOY A USAR LÓGICA DINÁMICA: Si la celda contiene "$", es precio.
-            
-            // Para este ejemplo, usaré los índices donde tu script escribía los precios: F(5), G(6), H(7), I(8), K(10)
-            const priceIndices = [5, 6, 7, 8, 10]; 
-            
-            priceIndices.forEach(idx => {
-                if (headers[idx]) rowHtml += `<th>${headers[idx]}</th>`;
+            PRICE_INDICES.forEach(idx => {
+                // Solo mostramos la columna si tiene título (evita columnas vacías)
+                if (headers[idx]) {
+                    headHtml += `<th>${headers[idx]}</th>`;
+                }
             });
-            rowHtml += '</tr>';
-            thead.innerHTML = rowHtml;
+            headHtml += '</tr>';
+            thead.innerHTML = headHtml;
 
-            // Generar Cuerpo
-            renderRows(data, priceIndices);
+            // --- 2. RENDERIZAR FILAS ---
+            renderRows(currentData);
         }
 
-        function renderRows(rows, priceIndices) {
+        function renderRows(dataRows) {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
 
-            rows.forEach(row => {
-                if (!row[0]) return; // Fila vacía
+            dataRows.forEach(row => {
+                if (!row[0]) return; // Saltar filas vacías
 
                 const tr = document.createElement('tr');
-                
-                // 1. Nombre Producto
-                let html = `<td>${row[0]}</td>`;
+                let rowHtml = `<td>${row[0]}</td>`; // Nombre del producto
 
-                // 2. Calcular mejor precio de esta fila
+                // Calcular mínimo
                 let minPrice = Infinity;
-                
-                // Primero extraemos valores numéricos
-                const prices = {};
-                priceIndices.forEach(idx => {
-                    const rawVal = row[idx];
-                    const cleanVal = parsePrice(rawVal);
-                    prices[idx] = cleanVal;
-                    if (cleanVal > 0 && cleanVal < minPrice) {
-                        minPrice = cleanVal;
-                    }
+                PRICE_INDICES.forEach(idx => {
+                    const price = parsePrice(row[idx]);
+                    if (price > 0 && price < minPrice) minPrice = price;
                 });
 
-                // 3. Generar celdas de precios
-                priceIndices.forEach(idx => {
-                    if (!row[idx]) { // Si la columna no existe en esta fila
-                         html += `<td>-</td>`;
-                         return;
-                    }
-
-                    const val = prices[idx];
-                    const text = row[idx];
-                    let cellClass = "price-cell";
+                // Generar celdas
+                PRICE_INDICES.forEach(idx => {
+                    const rawVal = row[idx];
+                    const price = parsePrice(rawVal);
                     
-                    if (val === 0) {
-                        html += `<td class="no-stock">Sin Stock</td>`;
+                    if (!rawVal || rawVal.trim() === '' || price === 0) {
+                        rowHtml += `<td class="no-stock">Sin Stock</td>`;
                     } else {
-                        // Si es el mínimo, agregamos clase winner
-                        if (val === minPrice) {
-                            html += `<td><span class="best-price">$${formatNumber(val)}</span></td>`;
+                        if (price === minPrice) {
+                            rowHtml += `<td><span class="best-price">$${formatNumber(price)}</span></td>`;
                         } else {
-                            html += `<td class="price-cell">$${formatNumber(val)}</td>`;
+                            rowHtml += `<td class="price-cell">$${formatNumber(price)}</td>`;
                         }
                     }
                 });
 
-                tr.innerHTML = html;
+                tr.innerHTML = rowHtml;
                 tbody.appendChild(tr);
             });
         }
 
-        // --- UTILIDADES ---
-
-        // Buscador
+        // --- BUSCADOR ---
         document.getElementById('searchInput').addEventListener('keyup', (e) => {
             const term = e.target.value.toLowerCase();
             const rows = document.querySelectorAll('#tableBody tr');
             
             rows.forEach(row => {
-                const txt = row.cells[0].textContent.toLowerCase();
-                row.style.display = txt.includes(term) ? '' : 'none';
+                const text = row.cells[0].textContent.toLowerCase();
+                row.style.display = text.includes(term) ? '' : 'none';
             });
         });
 
-        // Parseador CSV robusto
+        // --- PARSEADOR CSV ROBUSTO ---
         function parseCSV(str) {
             const arr = [];
             let quote = false;
@@ -323,22 +297,23 @@
             return arr;
         }
 
-        // Limpiador de precios Argentinos ($ 1.200,50 -> 1200.50)
+        // --- UTILIDADES DE PRECIO ---
         function parsePrice(str) {
             if (!str) return 0;
+            // Si contiene texto de error o "Sin Stock", devolvemos 0
             if (str.toLowerCase().includes('sin') || str.toLowerCase().includes('error')) return 0;
-            // Quitamos $ y puntos, cambiamos coma por punto
+            // Limpiar formato: "$ 1.200,00" -> 1200.00
             let clean = str.toString().replace(/[$.]/g, '').replace(',', '.').trim();
             return parseFloat(clean) || 0;
         }
 
         function formatNumber(num) {
-            return new Intl.NumberFormat('es-AR', { minimumFractionDigits: 0 }).format(num);
+            return new Intl.NumberFormat('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(num);
         }
 
-        // Arrancar
+        // INICIAR APP
         init();
+
     </script>
 </body>
 </html>
-
