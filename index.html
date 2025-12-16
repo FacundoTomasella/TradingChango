@@ -5,373 +5,324 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0d0d0d">
     
-    <!-- Caché Control -->
+    <!-- Evitar caché -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
 
-    <title>Market Prices</title>
+    <title>Precios.App</title>
     
-    <!-- Fuentes: Inter para texto, Roboto Mono para números (estilo financiero) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Iconos -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
     <style>
         :root {
-            /* MODO TRADER (OSCURO - Estilo tu foto) */
+            /* MODO OSCURO (Default) */
             --bg-app: #0d0d0d;
             --bg-card: #161616;
             --bg-nav: #1a1a1a;
             --text-main: #e0e0e0;
             --text-muted: #6b6b6b;
             --border: #2a2a2a;
+            --accent: #ff3b30; /* Rojo Trading */
             
-            --bull-green: #00ff88; /* Subida / Buen precio */
-            --bear-red: #ff3b30;   /* Bajada / Mal precio */
-            
-            --accent: #ff3b30; /* Color de marca principal (Rojo trading) */
-            --nav-active: #ffffff;
-            --nav-inactive: #555555;
+            --bull-green: #00ff88;
+            --bear-red: #ff3b30;
+            --star-gold: #ffcc00;
         }
 
-        /* MODO CÁLIDO (WARM) */
         body.warm-mode {
-            --bg-app: #fdf6e3; /* Crema solarizado */
-            --bg-card: #eee8d5;
-            --bg-nav: #e4dec7;
-            --text-main: #3b352b;
-            --text-muted: #93a1a1;
-            --border: #d3cbb7;
+            /* MODO CÁLIDO */
+            --bg-app: #f5f5f0;
+            --bg-card: #ffffff;
+            --bg-nav: #ebebeb;
+            --text-main: #333333;
+            --text-muted: #888888;
+            --border: #dcdcdc;
+            --accent: #d32f2f;
             
-            --bull-green: #2aa198;
-            --bear-red: #dc322f;
-            
-            --accent: #b58900;
-            --nav-active: #3b352b;
-            --nav-inactive: #93a1a1;
+            --bull-green: #008000;
+            --bear-red: #d32f2f;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
         body { 
-            background-color: var(--bg-app); 
-            color: var(--text-main); 
-            font-family: 'Inter', sans-serif; 
-            padding-bottom: 80px; /* Espacio para navbar */
-            transition: background 0.3s ease;
+            background-color: var(--bg-app); color: var(--text-main); 
+            font-family: 'Inter', sans-serif; padding-bottom: 80px; 
+            transition: background 0.3s;
         }
 
         /* HEADER */
         header {
             position: sticky; top: 0; z-index: 50;
-            background: rgba(13, 13, 13, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
-            padding: 10px 15px;
+            background: rgba(13,13,13,0.95); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border); padding: 10px 15px;
         }
-        body.warm-mode header { background: rgba(253, 246, 227, 0.95); }
+        body.warm-mode header { background: rgba(245,245,240,0.95); }
 
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .logo { font-weight: 800; font-size: 1.2rem; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; }
+        .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .logo { font-weight: 800; font-size: 18px; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; }
         .logo i { color: var(--accent); }
         
-        .theme-toggle { 
-            background: none; border: 1px solid var(--border); 
-            color: var(--text-main); padding: 5px 10px; border-radius: 8px; cursor: pointer;
-        }
+        .theme-btn { background: none; border: 1px solid var(--border); color: var(--text-main); padding: 6px 10px; border-radius: 8px; cursor: pointer; }
 
-        /* BUSCADOR ESTILO TICKER */
+        /* BUSCADOR */
         .search-container { position: relative; }
         #searchInput {
             width: 100%; background: var(--bg-card); border: 1px solid var(--border);
-            color: var(--text-main); padding: 10px 10px 10px 35px; border-radius: 6px;
-            font-family: 'Roboto Mono', monospace; font-size: 14px; text-transform: uppercase;
+            color: var(--text-main); padding: 12px 12px 12px 40px; border-radius: 8px;
+            font-size: 14px; font-family: 'Roboto Mono', monospace; text-transform: uppercase;
         }
-        .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 12px; }
+        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
 
-        /* LISTA DE ACTIVOS (PRODUCTOS) */
-        .market-list { padding: 0; }
+        /* LISTA TICKERS */
+        .ticker-list { padding: 0; }
 
         .ticker-card {
             border-bottom: 1px solid var(--border);
-            cursor: pointer;
-            transition: background 0.2s;
+            cursor: pointer; position: relative;
         }
-        .ticker-card:active { background-color: var(--bg-card); }
-
-        /* VISTA RESUMEN (Cerrado) */
-        .ticker-summary {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px;
-        }
-
-        .ticker-info { display: flex; align-items: center; gap: 12px; }
-        .ticker-symbol {
-            width: 40px; height: 40px; 
-            background: var(--bg-card); border-radius: 8px;
+        
+        /* FAVORITE STAR */
+        .fav-btn {
+            position: absolute; left: 0; top: 0; bottom: 0; width: 50px;
             display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 14px; color: var(--text-main);
-            border: 1px solid var(--border);
+            z-index: 10; font-size: 16px; color: var(--text-muted);
+            transition: 0.2s;
         }
-        .ticker-name-col { display: flex; flex-direction: column; }
-        .ticker-name { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
-        .ticker-cat { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
+        .fav-btn.active { color: var(--star-gold); }
 
-        .ticker-price-col { text-align: right; }
-        .last-price { 
-            font-family: 'Roboto Mono', monospace; font-weight: 700; font-size: 16px; 
-            color: var(--text-main); display: block; 
-        }
-        .change-pill {
-            font-family: 'Roboto Mono', monospace; font-size: 11px; font-weight: 600;
-            padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 4px;
-        }
-        .change-up { color: var(--bull-green); background: rgba(0, 255, 136, 0.1); }
-        .change-down { color: var(--bear-red); background: rgba(255, 59, 48, 0.1); }
-
-        /* DETALLES EXPANDIBLES (Libro de Órdenes) */
-        .order-book {
-            display: none; /* Oculto por defecto */
-            background: var(--bg-card);
-            padding: 10px 15px 20px 15px;
-            border-bottom: 1px solid var(--border);
-            animation: slideDown 0.3s ease-out;
-        }
-        .order-book.open { display: block; }
-
-        .ob-header { 
-            font-size: 10px; text-transform: uppercase; color: var(--text-muted); 
-            display: flex; justify-content: space-between; margin-bottom: 8px; padding: 0 5px;
-        }
-        
-        .ob-row {
+        .ticker-content {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 8px 5px; border-bottom: 1px dashed var(--border);
+            padding: 15px 15px 15px 50px; /* Padding left para la estrella */
         }
-        .ob-row:last-child { border-bottom: none; }
 
-        .ob-market { font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
-        .dot { width: 6px; height: 6px; border-radius: 50%; }
+        .t-left { display: flex; flex-direction: column; }
+        .t-symbol { font-family: 'Roboto Mono'; font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+        .t-name { font-size: 12px; color: var(--text-muted); max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        .ob-price { font-family: 'Roboto Mono', monospace; font-size: 14px; }
-        .ob-price.best { color: var(--bull-green); font-weight: 700; }
-        .ob-price.bad { color: var(--text-muted); }
-        .ob-price.no-stock { color: var(--bear-red); text-decoration: line-through; opacity: 0.5; }
+        .t-right { text-align: right; }
+        .t-price { font-family: 'Roboto Mono'; font-weight: 700; font-size: 16px; }
+        .t-change { font-family: 'Roboto Mono'; font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 2px; }
+        
+        .up { color: var(--bull-green); background: rgba(0, 255, 136, 0.1); }
+        .down { color: var(--bear-red); background: rgba(255, 59, 48, 0.1); }
 
-        .link-btn { font-size: 12px; text-decoration: none; color: var(--text-muted); margin-left: 10px; }
+        /* DETALLE (ORDER BOOK) */
+        .order-book { display: none; background: var(--bg-card); padding: 10px 20px 20px 20px; border-bottom: 1px solid var(--border); }
+        .order-book.open { display: block; animation: fadeIn 0.2s; }
+        
+        .ob-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border); font-size: 13px; }
+        .ob-row:last-child { border: none; }
+        .ob-store { font-weight: 500; display: flex; align-items: center; gap: 8px; }
+        .dot { width: 6px; height: 6px; border-radius: 50%; }
+        .ob-val { font-family: 'Roboto Mono'; }
+        .best-val { color: var(--bull-green); font-weight: 700; }
 
-        /* BOTTOM NAVIGATION */
+        /* NAVBAR INFERIOR */
         .bottom-nav {
             position: fixed; bottom: 0; width: 100%;
             background: var(--bg-nav); border-top: 1px solid var(--border);
             display: flex; justify-content: space-around; padding: 10px 0;
             z-index: 100; backdrop-filter: blur(10px);
         }
-        body.warm-mode .bottom-nav { background: rgba(228, 222, 199, 0.95); }
-
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: var(--nav-inactive); background: none; border: none; font-size: 10px;
-            gap: 4px; cursor: pointer; width: 100%;
-        }
-        .nav-item i { font-size: 18px; transition: 0.2s; }
-        .nav-item.active { color: var(--nav-active); font-weight: 600; }
-        .nav-item.active i { transform: translateY(-2px); color: var(--accent); }
-
-        /* LOADER */
-        #loader { text-align: center; padding: 50px; font-family: 'Roboto Mono'; color: var(--text-muted); font-size: 12px; }
         
-        /* Footer */
-        .legal { text-align: center; padding: 20px; font-size: 10px; color: var(--text-muted); }
-        .legal a { color: var(--text-muted); }
+        .nav-item {
+            background: none; border: none; color: var(--text-muted);
+            display: flex; flex-direction: column; align-items: center;
+            font-size: 10px; gap: 4px; cursor: pointer; width: 25%;
+        }
+        .nav-item i { font-size: 18px; }
+        .nav-item.active { color: var(--text-main); font-weight: 700; }
+        .nav-item.active i { color: var(--accent); }
 
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        /* ESTADOS VACIOS */
+        .empty-state { text-align: center; padding: 50px 20px; color: var(--text-muted); font-size: 14px; }
+        .loader { text-align: center; padding: 40px; color: var(--text-muted); font-family: 'Roboto Mono'; font-size: 12px; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     </style>
 </head>
 <body>
 
     <header>
-        <div class="top-bar">
-            <div class="logo"><i class="fa-solid fa-chart-line"></i> PRECIOS.APP</div>
-            <button class="theme-toggle" onclick="toggleTheme()">
-                <i class="fa-solid fa-sun" id="themeIcon"></i>
-            </button>
+        <div class="top-row">
+            <div class="logo"><i class="fa-solid fa-chart-simple"></i> PRECIOS.APP</div>
+            <button class="theme-btn" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
         </div>
         <div class="search-container">
             <i class="fa-solid fa-search search-icon"></i>
-            <input type="text" id="searchInput" placeholder="BUSCAR TICKER (EJ: POLLO)...">
+            <input type="text" id="searchInput" placeholder="BUSCAR TICKER O PRODUCTO...">
         </div>
     </header>
 
-    <div id="loader">CONECTANDO AL MERCADO...</div>
+    <div id="loader">SINCRONIZANDO MERCADO...</div>
 
-    <div class="market-list" id="marketList">
-        <!-- Los productos se inyectan aquí -->
-    </div>
-
-    <div class="legal">
-        Datos de mercado en tiempo real.<br>
-        Desarrollado por <a href="#">Facundo Tomasella</a>
-    </div>
+    <div class="ticker-list" id="tickerList"></div>
 
     <nav class="bottom-nav">
-        <!-- Íconos de FontAwesome -->
-        <button class="nav-item active" onclick="filterCat('Todo', this)">
-            <i class="fa-solid fa-globe"></i> Mercado
+        <button class="nav-item active" onclick="setTab('favs', this)">
+            <i class="fa-solid fa-star"></i> Favoritos
         </button>
-        <button class="nav-item" onclick="filterCat('Carniceria', this)">
-            <i class="fa-solid fa-drumstick-bite"></i> Carne
+        <button class="nav-item" onclick="setTab('super', this)">
+            <i class="fa-solid fa-cart-shopping"></i> Super
         </button>
-        <button class="nav-item" onclick="filterCat('Almacen', this)">
-            <i class="fa-solid fa-box-open"></i> Almacén
+        <button class="nav-item" onclick="setTab('frescos', this)">
+            <i class="fa-solid fa-drumstick-bite"></i> Frescos
         </button>
-        <button class="nav-item" onclick="filterCat('Verduleria', this)">
-            <i class="fa-solid fa-carrot"></i> Verdu
-        </button>
-        <button class="nav-item" onclick="filterCat('Mascotas', this)">
-            <i class="fa-solid fa-paw"></i> Mascotas
+        <button class="nav-item" onclick="setTab('especial', this)">
+            <i class="fa-solid fa-leaf"></i> Especial
         </button>
     </nav>
 
     <script>
         // ==========================================
-        // 1. DATA SOURCE
+        // 1. CONFIGURACIÓN
         // ==========================================
         const DATA_URL = 'https://raw.githubusercontent.com/facundotomasella/comparadordeprecios/main/precios.json';
         
-        // Mapeo para normalizar nombres de categorías del JSON a filtros
-        const CAT_MAP = {
-            "Carniceria": "Carniceria",
-            "Verduleria": "Verduleria",
-            "Fiambres y Lacteos": "Fiambres",
-            "Higuiene": "Higiene",
-            "Almacen": "Almacen",
-            "Dietetica": "Dietetica",
-            "Mascotas": "Mascotas"
+        // AGRUPACIÓN DE CATEGORÍAS (NUCLEADAS)
+        const GROUPS = {
+            'super': ['Almacen', 'Higuiene', 'Fiambres y Lacteos'],
+            'frescos': ['Carniceria', 'Verduleria'],
+            'especial': ['Dietetica', 'Mascotas']
         };
 
-        const SUPPLIERS = [
-            { id: 0, name: "COTO", color: "#ff5252" },
-            { id: 1, name: "CARREFOUR", color: "#448aff" },
-            { id: 2, name: "DIA", color: "#ff5252" },
-            { id: 3, name: "JUMBO", color: "#69f0ae" },
-            { id: 4, name: "EXTRA", color: "#ffab40" }
+        const STORES = [
+            { id: 0, name: "COTO", color: "#f44336" },
+            { id: 1, name: "CARREFOUR", color: "#2196f3" },
+            { id: 2, name: "DIA", color: "#f44336" },
+            { id: 3, name: "JUMBO", color: "#4caf50" },
+            { id: 4, name: "EXTRA", color: "#ff9800" }
         ];
 
-        let DB = {}; // Almacenamiento crudo
-        let flatList = []; // Lista plana para búsqueda global
+        // Estado
+        let DB = {};
+        let flatList = [];
+        let favorites = JSON.parse(localStorage.getItem('fav_tickers')) || [];
+        let currentTab = 'favs';
 
         // ==========================================
         // 2. INICIALIZACIÓN
         // ==========================================
         async function init() {
             try {
-                const response = await fetch(DATA_URL + '?t=' + Date.now());
-                if (!response.ok) throw new Error("Error fetching data");
-                DB = await response.json();
+                const res = await fetch(DATA_URL + '?t=' + Date.now());
+                DB = await res.json();
                 
-                // Aplanar la base de datos para lista general
-                // El JSON viene por categorías { "Carniceria": [...], "Almacen": [...] }
+                // Procesar Datos
                 Object.keys(DB).forEach(cat => {
-                    DB[cat].forEach(item => {
-                        // Agregamos la categoría al objeto del producto
-                        item.category = cat; 
-                        // Generar "Ticker" (Ej: Suprema Pollo -> SUPO)
+                    DB[cat].forEach((item, idx) => {
+                        item.cat = cat;
+                        item.id = generateID(cat, idx); // ID único para favoritos
                         item.ticker = generateTicker(item.n);
                         flatList.push(item);
                     });
                 });
 
-                // Mezclar un poco la lista inicial para que no sea todo carne
+                // Mezclar aleatoriamente para que no sea aburrido al inicio
                 flatList.sort(() => Math.random() - 0.5);
 
                 document.getElementById('loader').style.display = 'none';
-                renderList(flatList);
+                renderView();
 
-            } catch (error) {
-                console.error(error);
-                document.getElementById('loader').innerText = "MERCADO CERRADO (ERROR DE DATOS)";
+            } catch (e) {
+                console.error(e);
+                document.getElementById('loader').innerText = "OFFLINE - REINTENTAR";
             }
         }
 
         // ==========================================
-        // 3. RENDERIZADO TIPO TRADING
+        // 3. RENDERIZADO
         // ==========================================
-        function renderList(data) {
-            const container = document.getElementById('marketList');
+        function renderView() {
+            const container = document.getElementById('tickerList');
+            const term = document.getElementById('searchInput').value.toUpperCase();
+            
             container.innerHTML = '';
 
-            data.forEach((product, index) => {
-                // Calcular estadísticas de mercado para este producto
-                const stats = calculateStats(product.p);
-                
-                if (stats.minPrice === 0) return; // No mostrar si no hay stock en ningún lado
+            // Filtrado Principal
+            let dataToShow = [];
 
-                const div = document.createElement('div');
-                div.className = 'ticker-container';
-                
-                // HTML DE LA TARJETA
-                div.innerHTML = `
-                    <div class="ticker-card" onclick="toggleDetail('detail-${index}')">
-                        <div class="ticker-summary">
-                            <div class="ticker-info">
-                                <div class="ticker-symbol">${product.ticker}</div>
-                                <div class="ticker-name-col">
-                                    <div class="ticker-name">${product.n}</div>
-                                    <div class="ticker-cat">${product.category} • ${stats.bestProvider}</div>
-                                </div>
+            if (currentTab === 'favs') {
+                if (favorites.length === 0) {
+                    container.innerHTML = `<div class="empty-state">
+                        <i class="fa-regular fa-star" style="font-size:40px; margin-bottom:10px;"></i><br>
+                        Aún no tienes favoritos.<br>Toca la estrella en los productos para seguirlos aquí.
+                    </div>`;
+                    return;
+                }
+                dataToShow = flatList.filter(i => favorites.includes(i.id));
+            } else {
+                // Filtrar por Grupo (Super, Frescos, etc)
+                const allowedCats = GROUPS[currentTab] || [];
+                dataToShow = flatList.filter(i => allowedCats.includes(i.cat));
+            }
+
+            // Filtrado Buscador (Sobre lo ya filtrado)
+            if (term) {
+                // Si busca algo, buscamos en TODA la base de datos, no solo en la pestaña actual
+                dataToShow = flatList.filter(i => i.n.toUpperCase().includes(term) || i.ticker.includes(term));
+            }
+
+            // Límite de renderizado para performance (lazy load sería mejor, pero esto sirve)
+            const limit = term ? 50 : 20; 
+            
+            if (dataToShow.length === 0) {
+                container.innerHTML = '<div class="empty-state">No se encontraron activos.</div>';
+                return;
+            }
+
+            dataToShow.slice(0, limit).forEach(item => {
+                const stats = getStats(item.p);
+                if (stats.min === 0) return; // Ocultar sin stock
+
+                const isFav = favorites.includes(item.id);
+                const starClass = isFav ? 'active' : '';
+                const starIcon = isFav ? 'fa-solid fa-star' : 'fa-regular fa-star';
+
+                const card = document.createElement('div');
+                card.innerHTML = `
+                    <div class="ticker-card">
+                        <div class="fav-btn ${starClass}" onclick="toggleFav('${item.id}', this)">
+                            <i class="${starIcon}"></i>
+                        </div>
+                        <div class="ticker-content" onclick="toggleDetail('${item.id}')">
+                            <div class="t-left">
+                                <span class="t-symbol">${item.ticker}</span>
+                                <span class="t-name">${item.n}</span>
                             </div>
-                            <div class="ticker-price-col">
-                                <span class="last-price">$${formatNum(stats.minPrice)}</span>
-                                <span class="change-pill ${stats.trendClass}">
-                                    ${stats.trendIcon} ${stats.spread}%
-                                </span>
+                            <div class="t-right">
+                                <span class="t-price">$${format(stats.min)}</span><br>
+                                <span class="t-change ${stats.trend}">${stats.icon} ${stats.spread}%</span>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- DETALLE OCULTO (ACORDEÓN) -->
-                    <div id="detail-${index}" class="order-book">
-                        <div class="ob-header">
-                            <span>Exchange</span>
-                            <span>Precio</span>
-                        </div>
-                        ${renderOrderBook(product.p, stats.minPrice)}
+                    <div id="detail-${item.id}" class="order-book">
+                        ${renderOrderBook(item.p, stats.min)}
                     </div>
                 `;
-                container.appendChild(div);
+                container.appendChild(card);
             });
         }
 
-        // Generar las filas de los proveedores (Detalle)
-        function renderOrderBook(prices, bestPrice) {
+        function renderOrderBook(prices, best) {
             let html = '';
-            prices.forEach((price, idx) => {
-                const supplier = SUPPLIERS[idx];
-                let priceClass = "ob-price";
-                let displayPrice = `$${formatNum(price)}`;
-                let dotColor = "#444";
+            prices.forEach((p, i) => {
+                const store = STORES[i];
+                let val = `$${format(p)}`;
+                let styleClass = "ob-val";
+                let dotColor = store.color;
 
-                if (price === 0) {
-                    priceClass += " no-stock";
-                    displayPrice = "SIN STOCK";
-                } else if (price === bestPrice) {
-                    priceClass += " best";
-                    dotColor = varCss('--bull-green'); // Verde
-                } else {
-                    priceClass += " bad";
-                    dotColor = supplier.color;
-                }
+                if (p === 0) { val = "SIN STOCK"; styleClass += " no-stock"; dotColor = "#333"; }
+                else if (p === best) { val += " (BUY)"; styleClass += " best-val"; dotColor = "#00ff88"; }
 
                 html += `
                     <div class="ob-row">
-                        <div class="ob-market">
-                            <div class="dot" style="background:${supplier.color}"></div>
-                            ${supplier.name}
-                        </div>
-                        <div class="${priceClass}">${displayPrice}</div>
+                        <div class="ob-store"><div class="dot" style="background:${dotColor}"></div> ${store.name}</div>
+                        <div class="${styleClass}">${val}</div>
                     </div>
                 `;
             });
@@ -379,128 +330,104 @@
         }
 
         // ==========================================
-        // 4. LÓGICA FINANCIERA (Simulada)
-        // ==========================================
-        function calculateStats(pricesArray) {
-            // Filtrar precios válidos (>0)
-            const validPrices = pricesArray.filter(p => p > 0);
-            
-            if (validPrices.length === 0) return { minPrice: 0 };
-
-            const minPrice = Math.min(...validPrices);
-            const maxPrice = Math.max(...validPrices);
-            const avgPrice = validPrices.reduce((a, b) => a + b, 0) / validPrices.length;
-
-            // Encontrar quién tiene el mejor precio
-            const bestIdx = pricesArray.indexOf(minPrice);
-            const bestProvider = bestIdx >= 0 ? SUPPLIERS[bestIdx].name : "MERCADO";
-
-            // CALCULAR "SPREAD" o OPORTUNIDAD
-            // Si el precio mínimo es mucho menor al promedio, es una "Bajada" (Bueno para comprar)
-            // Usamos lógica inversa al trading: Precio Bajo = Bullish (Verde)
-            
-            let diffPercent = ((avgPrice - minPrice) / avgPrice) * 100;
-            
-            let trendClass = "change-up"; // Verde por defecto (Ahorro)
-            let trendIcon = "▼"; // Flecha abajo (Precio bajó respecto al promedio)
-            
-            // Si la diferencia es muy chica (< 2%), es neutral/rojo
-            if (diffPercent < 2) {
-                trendClass = "change-down";
-                trendIcon = "▶";
-            }
-
-            return {
-                minPrice,
-                spread: diffPercent.toFixed(2),
-                trendClass,
-                trendIcon,
-                bestProvider
-            };
-        }
-
-        // ==========================================
-        // 5. INTERACTIVIDAD
+        // 4. LÓGICA DE NEGOCIO
         // ==========================================
         
-        // Acordeón
+        function getStats(prices) {
+            const valid = prices.filter(p => p > 0);
+            if (valid.length === 0) return { min: 0 };
+
+            const min = Math.min(...valid);
+            const avg = valid.reduce((a,b)=>a+b,0) / valid.length;
+            
+            // Calculamos % respecto al promedio del mercado (Volatilidad)
+            let diff = ((avg - min) / avg) * 100;
+            
+            // Lógica Trading Inversa: Precio bajo es "Bullish" (Bueno)
+            let trend = "up"; // Verde
+            let icon = "▼";   // Cayó el precio (bueno)
+
+            if (diff < 2) {
+                trend = "down"; // Rojo/Neutro
+                icon = "▶";
+            }
+
+            return { min, spread: diff.toFixed(1), trend, icon };
+        }
+
+        function toggleFav(id, btn) {
+            // Evitar que el click se propague al acordeón
+            event.stopPropagation();
+            
+            if (favorites.includes(id)) {
+                favorites = favorites.filter(f => f !== id);
+                btn.classList.remove('active');
+                btn.innerHTML = '<i class="fa-regular fa-star"></i>';
+            } else {
+                favorites.push(id);
+                btn.classList.add('active');
+                btn.innerHTML = '<i class="fa-solid fa-star"></i>';
+            }
+            
+            // Guardar en celular
+            localStorage.setItem('fav_tickers', JSON.stringify(favorites));
+            
+            // Si estamos en tab favoritos, recargar para quitar
+            if (currentTab === 'favs') renderView();
+        }
+
+        function setTab(tabName, btn) {
+            currentTab = tabName;
+            
+            // UI
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Scroll top
+            window.scrollTo(0,0);
+            document.getElementById('searchInput').value = '';
+            
+            renderView();
+        }
+
         function toggleDetail(id) {
-            const el = document.getElementById(id);
-            // Cerrar otros (opcional, para sentirlo más app)
+            const el = document.getElementById(`detail-${id}`);
+            // Cerrar otros
             document.querySelectorAll('.order-book.open').forEach(ob => {
-                if (ob.id !== id) ob.classList.remove('open');
+                if (ob.id !== `detail-${id}`) ob.classList.remove('open');
             });
             el.classList.toggle('open');
         }
 
-        // Filtros Categoría (Nav Inferior)
-        function filterCat(catKeyword, btnElement) {
-            // UI Botones
-            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-            btnElement.classList.add('active');
-            
-            // Resetear búsqueda
-            document.getElementById('searchInput').value = "";
-
-            if (catKeyword === 'Todo') {
-                renderList(flatList);
-                return;
-            }
-
-            // Filtrar usando el nombre de la hoja en el JSON
-            // Buscamos coincidencia parcial en el nombre de la categoría del item
-            const filtered = flatList.filter(item => item.category.includes(catKeyword));
-            renderList(filtered);
-            
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        }
-
-        // Buscador
-        document.getElementById('searchInput').addEventListener('keyup', (e) => {
-            const term = e.target.value.toUpperCase();
-            
-            // Filtrar sobre la lista plana global
-            const filtered = flatList.filter(item => 
-                item.n.toUpperCase().includes(term) || 
-                item.ticker.includes(term)
-            );
-            renderList(filtered);
-        });
-
-        // Cambio de Tema
         function toggleTheme() {
-            const body = document.body;
-            const icon = document.getElementById('themeIcon');
-            
-            body.classList.toggle('warm-mode');
-            
-            if (body.classList.contains('warm-mode')) {
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-moon');
-            } else {
-                icon.classList.remove('fa-moon');
-                icon.classList.add('fa-sun');
-            }
+            document.body.classList.toggle('warm-mode');
         }
 
-        // Helpers
+        // ==========================================
+        // 5. UTILIDADES
+        // ==========================================
+        function generateID(cat, idx) {
+            // ID único basado en categoría e índice para persistencia
+            return `${cat.substring(0,3)}-${idx}`;
+        }
+
         function generateTicker(name) {
-            // Genera algo como "ACEITE" -> "ACT" o primeras 4 letras
-            // Quitar palabras comunes
-            const clean = name.toUpperCase().replace(/DE|EL|LA|CON|SIN|KG|GRS|ML/g, "").trim();
-            return clean.substring(0, 4).replace(/\s/g, "");
+            // Genera algo tipo BTC, AAPL
+            // Toma las primeras letras de palabras clave
+            const clean = name.toUpperCase().replace(/DE|EL|LA|CON|SIN|KG|GRS|ML|\W/g, " ");
+            const parts = clean.split(" ").filter(w => w.length > 2);
+            if (parts.length >= 2) return (parts[0].substring(0,2) + parts[1].substring(0,2));
+            return clean.substring(0, 4);
         }
 
-        function formatNum(num) {
-            return new Intl.NumberFormat('es-AR', { minimumFractionDigits: 0 }).format(num);
-        }
-        
-        // Helper para leer variables CSS desde JS (solo para el color verde exacto)
-        function varCss(name) {
-            return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+        function format(num) {
+            return new Intl.NumberFormat('es-AR', { maximumFractionDigits: 0 }).format(num);
         }
 
-        // Start
+        // Búsqueda en tiempo real
+        document.getElementById('searchInput').addEventListener('keyup', renderView);
+
+        // Arrancar
         init();
 
     </script>
