@@ -3,155 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Metaetiqueta para evitar caché viejo en el navegador -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    
     <title>Comparador de Precios</title>
     
-    <!-- Fuente Moderna -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary: #00a650; /* Verde ML/Precios */
-            --bg: #f5f5f5;
+            --primary: #00a650;
+            --bg: #f0f2f5;
             --white: #ffffff;
-            --text: #333333;
-            --gray: #999999;
+            --text: #333;
             --border: #e0e0e0;
+            /* Colores de Tiendas */
             --coto: #d32f2f;
-            --carr: #1e88e5;
+            --carr: #1976d2;
             --dia: #d32f2f;
-            --jumbo: #2e7d32;
+            --jumbo: #388e3c;
+            --extra: #f57c00;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
-        
-        body { background: var(--bg); padding-bottom: 40px; }
+        body { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 60px; }
 
-        /* HEADER FIJO */
-        header {
-            background: var(--primary); padding: 15px; 
-            position: sticky; top: 0; z-index: 100;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        /* HEADER */
+        .app-header {
+            background: var(--white); padding: 15px; position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
         
-        .search-wrapper {
-            max-width: 800px; margin: 0 auto; position: relative;
+        .search-box {
+            position: relative; max-width: 600px; margin: 0 auto;
         }
         
         #searchInput {
-            width: 100%; padding: 12px 15px 12px 40px; 
-            border-radius: 25px; border: none;
-            background: var(--white); font-size: 16px; outline: none;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 100%; padding: 12px 15px 12px 45px; box-sizing: border-box;
+            border-radius: 25px; border: 1px solid #ddd; background: #f9f9f9;
+            font-size: 16px; outline: none; transition: 0.3s;
         }
-        .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #aaa; }
+        #searchInput:focus { background: #fff; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(0, 166, 80, 0.2); }
+        
+        .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-size: 18px; color: #888; }
 
-        /* TABS DE CATEGORÍAS */
+        /* TABS */
+        .tabs-wrapper {
+            background: var(--white); padding: 10px 0; border-bottom: 1px solid var(--border);
+            position: sticky; top: 70px; z-index: 90; /* Debajo del header */
+        }
+        
         .tabs-container {
-            background: var(--white);
-            overflow-x: auto; white-space: nowrap; 
-            padding: 10px 15px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            scrollbar-width: none;
+            display: flex; overflow-x: auto; gap: 10px; padding: 0 15px;
+            scrollbar-width: none; -webkit-overflow-scrolling: touch;
         }
         .tabs-container::-webkit-scrollbar { display: none; }
 
         .tab-btn {
-            display: inline-block; padding: 8px 16px; margin-right: 8px;
-            background: #f0f0f0; border: none; border-radius: 20px;
-            font-size: 14px; font-weight: 500; color: #666; 
-            cursor: pointer; transition: 0.2s;
+            padding: 8px 16px; background: #f0f0f0; border: none; border-radius: 20px;
+            font-size: 14px; font-weight: 500; color: #555; white-space: nowrap; cursor: pointer;
+            transition: all 0.2s ease;
         }
-        .tab-btn.active {
-            background: var(--text); color: var(--white); font-weight: 700;
-        }
+        .tab-btn.active { background: var(--text); color: var(--white); font-weight: 700; transform: scale(1.05); }
 
-        /* TABLA DE PRECIOS */
-        .table-container {
-            margin-top: 10px;
-            background: var(--white);
-            overflow-x: auto; /* Scroll horizontal */
+        /* TABLA */
+        .container { max-width: 1000px; margin: 15px auto; padding: 0 10px; }
+        
+        .card-table {
+            background: var(--white); border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden;
             position: relative;
         }
 
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            min-width: 600px; /* Ancho mínimo para forzar scroll en móvil */
+        .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+
+        th, td { padding: 12px; text-align: center; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+
+        /* CABECERA */
+        thead th {
+            background: #fafafa; position: sticky; top: 0; z-index: 50;
+            font-size: 11px; text-transform: uppercase; color: #888; letter-spacing: 0.5px;
         }
 
-        th, td { 
-            padding: 14px 10px; 
-            text-align: center; 
-            border-bottom: 1px solid var(--border);
-            white-space: nowrap;
+        /* COLUMNA PRODUCTO FIJA */
+        tbody td:first-child, thead th:first-child {
+            position: sticky; left: 0; background: var(--white); z-index: 60;
+            text-align: left; border-right: 2px solid #f5f5f5;
+            min-width: 140px; max-width: 180px;
+            font-weight: 500; font-size: 14px; line-height: 1.3;
         }
+        thead th:first-child { background: #fafafa; z-index: 70; }
 
-        /* ENCABEZADOS */
-        th { 
-            background: #fafafa; 
-            font-size: 12px; text-transform: uppercase; color: #666; font-weight: 700; 
-            position: sticky; top: 0;
-        }
-
-        /* COLUMNA PRODUCTO (FIJA A LA IZQUIERDA) */
-        th:first-child, td:first-child {
-            position: sticky; left: 0; z-index: 10;
-            background: var(--white); 
-            text-align: left; 
-            font-weight: 500; font-size: 14px; color: var(--text);
-            border-right: 2px solid #f0f0f0;
-            min-width: 130px; max-width: 160px;
-            white-space: normal; /* Permite saltos de línea en nombre */
-            line-height: 1.3;
-        }
-        th:first-child { background: #fafafa; z-index: 20; }
-
-        /* PRECIOS */
-        .price-val { font-size: 15px; color: #666; letter-spacing: -0.5px; }
+        /* CELDAS PRECIO */
+        .price-cell { font-size: 15px; color: #555; font-family: monospace; letter-spacing: -0.5px; }
         
-        .winner { 
-            color: var(--primary); font-weight: 800; font-size: 16px;
-            background: #e8f5e9; padding: 4px 8px; border-radius: 6px;
+        .winner {
+            background: #e8f5e9; color: #1b5e20; font-weight: 700;
+            padding: 4px 8px; border-radius: 6px; border: 1px solid #c8e6c9;
         }
-
-        .no-stock { color: #ccc; font-size: 20px; font-weight: 300; }
+        
+        .no-stock { color: #ddd; font-size: 20px; font-weight: 300; }
 
         /* LOADER */
-        #loader { padding: 50px; text-align: center; color: #888; font-size: 14px; }
-
-        /* OPTIMIZACIÓN MÓVIL */
-        @media (min-width: 768px) {
-            .table-container { margin: 20px auto; max-width: 1000px; border-radius: 8px; border: 1px solid var(--border); }
-            th:first-child, td:first-child { min-width: 250px; }
+        #loader { text-align: center; padding: 60px 20px; display: none; }
+        .spinner {
+            width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary);
+            border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px auto;
         }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* ESTADO VACIO */
+        .empty-state { text-align: center; padding: 40px; color: #999; }
 
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="search-wrapper">
+    <div class="app-header">
+        <div class="search-box">
             <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" placeholder="Buscar producto (ej: Asado, Arroz)...">
+            <input type="text" id="searchInput" placeholder="Buscar producto...">
         </div>
-    </header>
-
-    <div class="tabs-container" id="tabsContainer">
-        <!-- Botones generados por JS -->
     </div>
 
-    <div id="loader">Cargando precios actualizados... ⏳</div>
+    <div class="tabs-wrapper">
+        <div class="tabs-container" id="tabsContainer">
+            <!-- Botones JS -->
+        </div>
+    </div>
 
-    <div class="table-container">
-        <table id="priceTable">
-            <thead id="tableHead"></thead>
-            <tbody id="tableBody"></tbody>
-        </table>
+    <div class="container">
+        <div id="loader">
+            <div class="spinner"></div>
+            <div style="color:#666; font-size:14px;">Cargando precios actualizados...</div>
+        </div>
+
+        <div class="card-table">
+            <div class="table-scroll">
+                <table id="priceTable">
+                    <thead id="tableHead"></thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+            <div id="emptyState" class="empty-state" style="display: none;">No se encontraron productos</div>
+        </div>
     </div>
 
     <script>
         // ==========================================
-        // 1. CONFIGURACIÓN (TUS HOJAS)
+        // 1. CONFIGURACIÓN
         // ==========================================
         const SHEET_KEY = '2PACX-1vR6UTln-nhhZCArBfy7FzU2CO1jel87qmlBquCFWYDmson-uoJeD_Q22K5Yiq6l48rZF71cjhERzAZf';
         
@@ -165,24 +168,26 @@
             { name: "Mascotas 🐶", gid: "501420257" }
         ];
 
-        // Definimos MANUALMENTE los nombres de las columnas para que se vea bonito
-        // Estos corresponden a las columnas F, G, H, I, K de tu Excel
+        // Definición de las columnas de precio (F, G, H, I, K son indices 5,6,7,8,10)
         const SUPERMERCADOS = [
             { id: 5, name: "Coto", color: "#d32f2f" },
-            { id: 6, name: "Carrefour", color: "#1e88e5" },
+            { id: 6, name: "Carrefour", color: "#1976d2" },
             { id: 7, name: "Día", color: "#d32f2f" },
-            { id: 8, name: "Jumbo", color: "#2e7d32" },
-            { id: 10, name: "Extra", color: "#f57c00" } // Columna K (Alternativa)
+            { id: 8, name: "Jumbo", color: "#388e3c" },
+            { id: 10, name: "Extra", color: "#f57c00" }
         ];
 
+        // MEMORIA CACHÉ (Para que sea rápido)
+        const DATA_CACHE = {}; 
         let currentData = [];
 
         // ==========================================
         // 2. INICIALIZACIÓN
         // ==========================================
-        async function init() {
+        function init() {
             renderTabs();
-            await loadCategory(CATEGORIAS[0]);
+            // Cargar la primera categoría
+            loadCategory(CATEGORIAS[0]);
         }
 
         function renderTabs() {
@@ -193,8 +198,10 @@
                 btn.className = `tab-btn ${index === 0 ? 'active' : ''}`;
                 btn.innerText = cat.name;
                 btn.onclick = () => {
+                    // Actualizar UI botones
                     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
+                    // Cargar datos
                     loadCategory(cat);
                 };
                 container.appendChild(btn);
@@ -203,70 +210,105 @@
 
         async function loadCategory(category) {
             const loader = document.getElementById('loader');
-            const tbody = document.getElementById('tableBody');
-            const thead = document.getElementById('tableHead');
+            const tableHead = document.getElementById('tableHead');
+            const tableBody = document.getElementById('tableBody');
+            const emptyState = document.getElementById('emptyState');
             
-            loader.style.display = 'block';
-            tbody.innerHTML = '';
-            thead.innerHTML = ''; // Limpiamos cabecera para regenerarla si hace falta
+            // Limpiar tabla visualmente mientras carga
+            tableBody.innerHTML = '';
+            emptyState.style.display = 'none';
 
-            // URL del CSV
-            const url = `https://docs.google.com/spreadsheets/d/e/${SHEET_KEY}/pub?gid=${category.gid}&single=true&output=csv`;
+            // 1. CHEQUEAR CACHÉ (Velocidad extrema)
+            if (DATA_CACHE[category.gid]) {
+                console.log("Datos desde caché (Rápido) ⚡");
+                renderHeader(); // Renderizar encabezado fijo
+                currentData = DATA_CACHE[category.gid];
+                renderRows(currentData);
+                return;
+            }
+
+            // 2. SI NO ESTÁ EN CACHÉ, DESCARGAR
+            loader.style.display = 'block';
+            console.log("Descargando desde Google... ⏳");
+
+            const url = `https://docs.google.com/spreadsheets/d/e/${SHEET_KEY}/pub?gid=${category.gid}&single=true&output=csv&t=${Date.now()}`; // Timestamp evita caché del navegador
 
             try {
                 const response = await fetch(url);
                 const csvText = await response.text();
-                const rows = parseCSV(csvText); // Parseador mejorado
+                const rows = parseCSV(csvText);
 
                 if (rows.length < 2) {
-                    loader.innerText = "No hay datos disponibles.";
+                    emptyState.style.display = 'block';
+                    emptyState.innerText = "No hay datos disponibles";
                     return;
                 }
 
-                // Generar Cabecera Fija (Bonita)
-                let headHtml = `<tr><th>PRODUCTO</th>`;
-                SUPERMERCADOS.forEach(sup => {
-                    headHtml += `<th style="color:${sup.color}">${sup.name}</th>`;
-                });
-                headHtml += `</tr>`;
-                thead.innerHTML = headHtml;
-
-                currentData = rows.slice(1); // Ignoramos encabezado real del excel
-                renderRows(currentData);
+                // Guardar en memoria (Slice 1 quita los encabezados del excel que a veces molestan)
+                // Filtrar filas vacías (sin nombre)
+                const cleanRows = rows.slice(1).filter(r => r[0] && r[0].trim() !== "");
                 
+                DATA_CACHE[category.gid] = cleanRows;
+                currentData = cleanRows;
+
+                renderHeader();
+                renderRows(currentData);
+
             } catch (error) {
                 console.error(error);
-                loader.innerText = "Error cargando. Verifica tu conexión.";
+                emptyState.style.display = 'block';
+                emptyState.innerText = "Error de conexión. Recarga la página.";
             } finally {
                 loader.style.display = 'none';
             }
         }
 
-        function renderRows(data) {
+        // Renderizar Encabezado Fijo (Limpio, sin leer del Excel)
+        function renderHeader() {
+            const thead = document.getElementById('tableHead');
+            let html = `<tr><th>PRODUCTO</th>`;
+            SUPERMERCADOS.forEach(sup => {
+                html += `<th style="color:${sup.color}">${sup.name}</th>`;
+            });
+            html += `</tr>`;
+            thead.innerHTML = html;
+        }
+
+        // Renderizar Filas
+        function renderRows(rows) {
             const tbody = document.getElementById('tableBody');
+            const emptyState = document.getElementById('emptyState');
+            
             tbody.innerHTML = '';
 
-            data.forEach(row => {
-                if (!row[0]) return; // Fila vacía
+            if (rows.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            } else {
+                emptyState.style.display = 'none';
+            }
 
+            // Fragmento para mejorar rendimiento de renderizado
+            const fragment = document.createDocumentFragment();
+
+            rows.forEach(row => {
                 const tr = document.createElement('tr');
                 
-                // 1. Nombre Producto (Columna A - indice 0)
+                // Nombre del Producto (Columna A - Index 0)
                 let html = `<td>${row[0]}</td>`;
 
-                // 2. Calcular Mínimo (Matemática)
+                // Calcular Mínimo de esta fila
                 let minPrice = Infinity;
                 SUPERMERCADOS.forEach(sup => {
-                    // Validamos que exista la columna en el CSV antes de leer
+                    // Verificamos si la fila tiene datos en esa columna
                     if (row[sup.id]) {
                         const p = parsePrice(row[sup.id]);
                         if (p > 0 && p < minPrice) minPrice = p;
                     }
                 });
 
-                // 3. Generar Celdas de Precio
+                // Crear Celdas
                 SUPERMERCADOS.forEach(sup => {
-                    // Si el CSV tiene menos columnas de las esperadas, prevenimos error
                     const rawVal = row[sup.id] || ""; 
                     const price = parsePrice(rawVal);
 
@@ -274,30 +316,30 @@
                         if (price === minPrice) {
                             html += `<td><span class="winner">$${formatNumber(price)}</span></td>`;
                         } else {
-                            html += `<td><span class="price-val">$${formatNumber(price)}</span></td>`;
+                            html += `<td><span class="price-cell">$${formatNumber(price)}</span></td>`;
                         }
                     } else {
-                        // Visual limpio para Sin Stock
+                        // Guion limpio para sin stock
                         html += `<td><span class="no-stock">-</span></td>`;
                     }
                 });
 
                 tr.innerHTML = html;
-                tbody.appendChild(tr);
+                fragment.appendChild(tr);
             });
+
+            tbody.appendChild(fragment);
         }
 
-        // --- BUSCADOR INSTANTÁNEO ---
+        // --- BUSCADOR ---
         document.getElementById('searchInput').addEventListener('keyup', (e) => {
             const term = e.target.value.toLowerCase();
-            const rows = document.querySelectorAll('#tableBody tr');
-            rows.forEach(row => {
-                const txt = row.cells[0].textContent.toLowerCase();
-                row.style.display = txt.includes(term) ? '' : 'none';
-            });
+            // Filtramos los datos en memoria
+            const filtered = currentData.filter(row => row[0].toLowerCase().includes(term));
+            renderRows(filtered);
         });
 
-        // --- PARSEADOR CSV (Maneja comillas y comas dentro de celdas) ---
+        // --- PARSEADOR CSV ---
         function parseCSV(str) {
             const arr = [];
             let quote = false;
@@ -318,14 +360,16 @@
             return arr;
         }
 
-        // --- LIMPIEZA DE PRECIOS ---
+        // --- UTILIDADES PRECIO ---
         function parsePrice(str) {
             if (!str) return 0;
-            // Si la celda contiene letras (ej: "Sin Stock", "Error"), devolvemos 0
-            if (/[a-zA-Z]/.test(str)) return 0;
-            // Limpieza: "$ 1.200,50" -> 1200.50
+            // Si el texto es error de excel (#N/A) o texto, devolver 0
+            if (str.includes('#') || str.toLowerCase().includes('stock') || str.toLowerCase().includes('error')) return 0;
+            
+            // Limpiar "$ 1.500,00" -> 1500.00
             let clean = str.toString().replace(/[$.]/g, '').replace(',', '.').trim();
-            return parseFloat(clean) || 0;
+            // Validar que sea numero
+            return isNaN(clean) ? 0 : parseFloat(clean);
         }
 
         function formatNumber(num) {
@@ -336,4 +380,3 @@
     </script>
 </body>
 </html>
-
