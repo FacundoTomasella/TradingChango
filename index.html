@@ -152,166 +152,118 @@
         </div>
     </div>
 
-    <script>
+   <script>
         // ==========================================
-        // 1. CONFIGURACIÓN
+        // 🚀 CONFIGURACIÓN ULTRA RÁPIDA
         // ==========================================
-        const SHEET_KEY = '2PACX-1vR6UTln-nhhZCArBfy7FzU2CO1jel87qmlBquCFWYDmson-uoJeD_Q22K5Yiq6l48rZF71cjhERzAZf';
         
+        // La URL de tu archivo JSON en GitHub (Raw)
+        // Reemplaza con tu usuario y repo real
+        const DATA_URL = 'https://raw.githubusercontent.com/facundotomasella/comparadordeprecios/main/precios.json';
+
+        // Mapeo de IDs de categorías a nombres para mostrar
+        // Las claves deben coincidir EXACTAMENTE con los nombres de las pestañas de tu Excel
         const CATEGORIAS = [
-            { name: "Carnicería 🥩", gid: "1330431075" },
-            { name: "Verdulería 🥦", gid: "0" },
-            { name: "Fiambres 🧀", gid: "279587113" },
-            { name: "Higiene 🧼", gid: "206948588" },
-            { name: "Almacén 🥫", gid: "229337357" },
-            { name: "Dietética 🌾", gid: "1226047194" },
-            { name: "Mascotas 🐶", gid: "501420257" }
+            "Carniceria", "Verduleria", "Fiambres y Lacteos", 
+            "Higuiene", "Almacen", "Dietetica", "Mascotas"
         ];
 
-        // Definición de las columnas de precio (F, G, H, I, K son indices 5,6,7,8,10)
         const SUPERMERCADOS = [
-            { id: 5, name: "Coto", color: "#d32f2f" },
-            { id: 6, name: "Carrefour", color: "#1976d2" },
-            { id: 7, name: "Día", color: "#d32f2f" },
-            { id: 8, name: "Jumbo", color: "#388e3c" },
-            { id: 10, name: "Extra", color: "#f57c00" }
+            { name: "Coto", color: "#d32f2f" },
+            { name: "Carrefour", color: "#1976d2" },
+            { name: "Día", color: "#d32f2f" },
+            { name: "Jumbo", color: "#388e3c" },
+            { name: "Extra", color: "#f57c00" }
         ];
 
-        // MEMORIA CACHÉ (Para que sea rápido)
-        const DATA_CACHE = {}; 
-        let currentData = [];
+        // Memoria Global
+        let DB = {}; 
 
         // ==========================================
-        // 2. INICIALIZACIÓN
+        // INICIALIZACIÓN
         // ==========================================
-        function init() {
-            renderTabs();
-            // Cargar la primera categoría
-            loadCategory(CATEGORIAS[0]);
-        }
-
-        function renderTabs() {
-            const container = document.getElementById('tabsContainer');
-            container.innerHTML = '';
-            CATEGORIAS.forEach((cat, index) => {
-                const btn = document.createElement('button');
-                btn.className = `tab-btn ${index === 0 ? 'active' : ''}`;
-                btn.innerText = cat.name;
-                btn.onclick = () => {
-                    // Actualizar UI botones
-                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    // Cargar datos
-                    loadCategory(cat);
-                };
-                container.appendChild(btn);
-            });
-        }
-
-        async function loadCategory(category) {
+        async function init() {
             const loader = document.getElementById('loader');
-            const tableHead = document.getElementById('tableHead');
-            const tableBody = document.getElementById('tableBody');
-            const emptyState = document.getElementById('emptyState');
+            const tabs = document.getElementById('tabsContainer');
             
-            // Limpiar tabla visualmente mientras carga
-            tableBody.innerHTML = '';
-            emptyState.style.display = 'none';
-
-            // 1. CHEQUEAR CACHÉ (Velocidad extrema)
-            if (DATA_CACHE[category.gid]) {
-                console.log("Datos desde caché (Rápido) ⚡");
-                renderHeader(); // Renderizar encabezado fijo
-                currentData = DATA_CACHE[category.gid];
-                renderRows(currentData);
-                return;
-            }
-
-            // 2. SI NO ESTÁ EN CACHÉ, DESCARGAR
-            loader.style.display = 'block';
-            console.log("Descargando desde Google... ⏳");
-
-            const url = `https://docs.google.com/spreadsheets/d/e/${SHEET_KEY}/pub?gid=${category.gid}&single=true&output=csv&t=${Date.now()}`; // Timestamp evita caché del navegador
-
             try {
-                const response = await fetch(url);
-                const csvText = await response.text();
-                const rows = parseCSV(csvText);
+                // 1. DESCARGA ÚNICA (Solo una petición pequeña)
+                const response = await fetch(DATA_URL + '?t=' + Date.now()); // timestamp evita caché viejo
+                if (!response.ok) throw new Error("No se pudo cargar el JSON");
+                DB = await response.json();
 
-                if (rows.length < 2) {
-                    emptyState.style.display = 'block';
-                    emptyState.innerText = "No hay datos disponibles";
-                    return;
-                }
+                loader.style.display = 'none';
 
-                // Guardar en memoria (Slice 1 quita los encabezados del excel que a veces molestan)
-                // Filtrar filas vacías (sin nombre)
-                const cleanRows = rows.slice(1).filter(r => r[0] && r[0].trim() !== "");
-                
-                DATA_CACHE[category.gid] = cleanRows;
-                currentData = cleanRows;
+                // 2. GENERAR BOTONES
+                tabs.innerHTML = '';
+                CATEGORIAS.forEach((cat, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = `tab-btn ${index === 0 ? 'active' : ''}`;
+                    // Emojis opcionales para decorar
+                    let emoji = "";
+                    if(cat.includes("Carniceria")) emoji = "🥩 ";
+                    if(cat.includes("Verduleria")) emoji = "🥦 ";
+                    // ... puedes agregar más
+                    
+                    btn.innerText = emoji + cat;
+                    btn.onclick = () => {
+                        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        renderTable(cat);
+                    };
+                    tabs.appendChild(btn);
+                });
 
-                renderHeader();
-                renderRows(currentData);
+                // 3. CARGAR PRIMERA CATEGORÍA (Instantáneo)
+                renderTable(CATEGORIAS[0]);
 
             } catch (error) {
                 console.error(error);
-                emptyState.style.display = 'block';
-                emptyState.innerText = "Error de conexión. Recarga la página.";
-            } finally {
-                loader.style.display = 'none';
+                loader.innerText = "Error cargando datos. Verifica que el script de Google haya corrido.";
             }
         }
 
-        // Renderizar Encabezado Fijo (Limpio, sin leer del Excel)
-        function renderHeader() {
+        // ==========================================
+        // RENDERIZADO (INSTANTÁNEO)
+        // ==========================================
+        function renderTable(catName) {
             const thead = document.getElementById('tableHead');
-            let html = `<tr><th>PRODUCTO</th>`;
-            SUPERMERCADOS.forEach(sup => {
-                html += `<th style="color:${sup.color}">${sup.name}</th>`;
-            });
-            html += `</tr>`;
-            thead.innerHTML = html;
-        }
-
-        // Renderizar Filas
-        function renderRows(rows) {
             const tbody = document.getElementById('tableBody');
-            const emptyState = document.getElementById('emptyState');
-            
-            tbody.innerHTML = '';
+            const data = DB[catName] || []; // Obtener datos de la memoria
 
-            if (rows.length === 0) {
-                emptyState.style.display = 'block';
+            // Header
+            let headHtml = `<tr><th>PRODUCTO</th>`;
+            SUPERMERCADOS.forEach(sup => {
+                headHtml += `<th style="color:${sup.color}">${sup.name}</th>`;
+            });
+            headHtml += `</tr>`;
+            thead.innerHTML = headHtml;
+
+            // Body
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="padding:20px;">No hay datos disponibles</td></tr>';
                 return;
-            } else {
-                emptyState.style.display = 'none';
             }
 
-            // Fragmento para mejorar rendimiento de renderizado
             const fragment = document.createDocumentFragment();
 
-            rows.forEach(row => {
+            data.forEach(item => {
                 const tr = document.createElement('tr');
                 
-                // Nombre del Producto (Columna A - Index 0)
-                let html = `<td>${row[0]}</td>`;
+                // Nombre
+                let html = `<td>${item.n}</td>`; // item.n es el nombre en el JSON minificado
 
-                // Calcular Mínimo de esta fila
+                // Calcular Mínimo
+                // item.p es el array de precios [p1, p2, p3, p4, p5]
                 let minPrice = Infinity;
-                SUPERMERCADOS.forEach(sup => {
-                    // Verificamos si la fila tiene datos en esa columna
-                    if (row[sup.id]) {
-                        const p = parsePrice(row[sup.id]);
-                        if (p > 0 && p < minPrice) minPrice = p;
-                    }
+                item.p.forEach(p => {
+                    if (p > 0 && p < minPrice) minPrice = p;
                 });
 
-                // Crear Celdas
-                SUPERMERCADOS.forEach(sup => {
-                    const rawVal = row[sup.id] || ""; 
-                    const price = parsePrice(rawVal);
-
+                // Celdas Precios
+                item.p.forEach(price => {
                     if (price > 0) {
                         if (price === minPrice) {
                             html += `<td><span class="winner">$${formatNumber(price)}</span></td>`;
@@ -319,7 +271,6 @@
                             html += `<td><span class="price-cell">$${formatNumber(price)}</span></td>`;
                         }
                     } else {
-                        // Guion limpio para sin stock
                         html += `<td><span class="no-stock">-</span></td>`;
                     }
                 });
@@ -331,52 +282,23 @@
             tbody.appendChild(fragment);
         }
 
-        // --- BUSCADOR ---
+        // Buscador Local (Rapidísimo)
         document.getElementById('searchInput').addEventListener('keyup', (e) => {
             const term = e.target.value.toLowerCase();
-            // Filtramos los datos en memoria
-            const filtered = currentData.filter(row => row[0].toLowerCase().includes(term));
-            renderRows(filtered);
+            const rows = document.querySelectorAll('#tableBody tr');
+            rows.forEach(row => {
+                // La celda 0 es el nombre
+                const txt = row.cells[0].textContent.toLowerCase();
+                row.style.display = txt.includes(term) ? '' : 'none';
+            });
         });
 
-        // --- PARSEADOR CSV ---
-        function parseCSV(str) {
-            const arr = [];
-            let quote = false;
-            let col = 0, c = 0;
-            for (let r = 0; r < str.length; r++) {
-                let char = str[r], next = str[r+1];
-                if (!arr[col]) arr[col] = [];
-                if (!arr[col][c]) arr[col][c] = "";
-                if (char === '"') {
-                    if (quote && next === '"') { arr[col][c] += '"'; r++; }
-                    else { quote = !quote; }
-                } else if (char === ',' && !quote) { c++; }
-                else if ((char === '\r' || char === '\n') && !quote) {
-                    if (arr[col][c] || c>0) { col++; c = 0; }
-                    if (char === '\r' && next === '\n') r++;
-                } else { arr[col][c] += char; }
-            }
-            return arr;
-        }
-
-        // --- UTILIDADES PRECIO ---
-        function parsePrice(str) {
-            if (!str) return 0;
-            // Si el texto es error de excel (#N/A) o texto, devolver 0
-            if (str.includes('#') || str.toLowerCase().includes('stock') || str.toLowerCase().includes('error')) return 0;
-            
-            // Limpiar "$ 1.500,00" -> 1500.00
-            let clean = str.toString().replace(/[$.]/g, '').replace(',', '.').trim();
-            // Validar que sea numero
-            return isNaN(clean) ? 0 : parseFloat(clean);
-        }
-
         function formatNumber(num) {
-            return new Intl.NumberFormat('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(num);
+            return new Intl.NumberFormat('es-AR', { minimumFractionDigits: 0 }).format(num);
         }
 
         init();
     </script>
 </body>
 </html>
+
