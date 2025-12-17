@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#ffffff">
     
-    <!-- SEO & FAVICON -->
-    <title>TradingChango | ¡Tradeá los Precios, Maximizá el Carrito!</title>
-    <meta name="description" content="Comparador de precios de supermercados en tiempo real. Encontrá la mejor oferta en Coto, Carrefour, Día y Jumbo.">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
+    <!-- SEO -->
+    <title>TradingChango | Tradeá los Precios, Maximizá el Carrito</title>
+    <meta name="description" content="Comparador de precios de supermercados en tiempo real.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>">
     
     <!-- No Caché -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
@@ -21,7 +21,7 @@
 
     <style>
         :root {
-            /* MODO DÍA (Default - Blanco Puro) */
+            /* MODO DÍA (Default) */
             --bg-app: #ffffff;
             --bg-card: #f9f9f9;
             --bg-nav: #ffffff;
@@ -29,28 +29,23 @@
             --text-muted: #787b86;
             --border: #e0e3eb;
             
-            /* ACENTO AMARILLO (Trading/Gold) */
-            --accent: #ffcf00; 
-            --accent-text: #000000; /* Texto sobre amarillo */
+            /* AZUL ORIGINAL */
+            --accent: #2962ff; 
             
             /* LÓGICA PRECIOS */
-            --color-good: #00a650;   /* Verde Ahorro */
-            --color-bad: #f23645;    /* Rojo Gasto */
+            --color-good: #00a650;   
+            --color-bad: #f23645;    
             --star-gold: #f2a900;
-            
-            --shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
         body.dark-mode {
-            /* MODO OSCURO (Negro Profundo) */
+            /* MODO OSCURO */
             --bg-app: #000000;
             --bg-card: #121212;
             --bg-nav: #121212;
             --text-main: #ffffff;
             --text-muted: #888888;
             --border: #2a2a2a;
-            
-            --shadow: none;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -60,14 +55,11 @@
             font-family: '-apple-system', 'BlinkMacSystemFont', 'Inter', sans-serif; 
             padding-bottom: 90px; 
             transition: background 0.3s, color 0.3s;
-            display: flex; flex-direction: column; align-items: center; /* Centrado Desktop */
+            display: flex; flex-direction: column; align-items: center;
         }
 
-        /* CONTENEDOR CENTRAL (App Style en Desktop) */
         .app-container {
-            width: 100%;
-            max-width: 600px; /* Ancho máximo estilo Comparatasas */
-            min-height: 100vh;
+            width: 100%; max-width: 600px; min-height: 100vh;
             background: var(--bg-app);
             border-left: 1px solid var(--border);
             border-right: 1px solid var(--border);
@@ -89,26 +81,16 @@
             display: flex; align-items: center; gap: 10px; color: var(--text-main);
         }
         
-        /* LOGO PERSONALIZADO (CARRITO + VELA) */
+        /* LOGO SIMPLE (Como antes) */
         .logo-icon { 
-            position: relative; display: flex; align-items: center; justify-content: center;
-            width: 36px; height: 36px; background: var(--accent); 
-            border-radius: 8px; color: var(--accent-text);
+            display: flex; align-items: center; justify-content: center;
+            width: 32px; height: 32px; background: rgba(41, 98, 255, 0.1); 
+            border-radius: 8px; color: var(--accent); position: relative;
         }
-        .logo-icon .fa-cart-shopping { font-size: 16px; transform: translateX(-2px); }
-        /* Simulación de Vela Japonesa */
-        .candle-stick {
-            position: absolute; right: 6px; bottom: 8px;
-            width: 4px; height: 12px; background: var(--color-good);
-            border-radius: 1px;
-        }
-        .candle-wick {
-            position: absolute; right: 7px; bottom: 6px;
-            width: 2px; height: 16px; background: var(--color-good);
-        }
+        .logo-icon .fa-cart-shopping { font-size: 14px; }
+        .logo-icon .fa-chart-line { font-size: 10px; position: absolute; top: 6px; right: 6px; }
         
-        .theme-btn { background: none; border: none; color: var(--text-main); font-size: 20px; cursor: pointer; transition: 0.2s; }
-        .theme-btn:active { transform: rotate(30deg); }
+        .theme-btn { background: none; border: none; color: var(--text-main); font-size: 20px; cursor: pointer; }
 
         /* BUSCADOR */
         .search-container { position: relative; }
@@ -119,7 +101,7 @@
             font-size: 15px; font-family: 'Inter', sans-serif;
             transition: border-color 0.2s;
         }
-        #searchInput:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 2px rgba(255, 204, 0, 0.2); }
+        #searchInput:focus { border-color: var(--accent); outline: none; }
         .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 16px; }
 
         /* LISTA TICKERS */
@@ -163,7 +145,6 @@
         .order-book { 
             display: none; background: var(--bg-card); 
             padding: 5px 20px 20px 20px; border-bottom: 1px solid var(--border); 
-            box-shadow: inset 0 4px 8px rgba(0,0,0,0.02);
         }
         .order-book.open { display: block; animation: slideDown 0.2s ease-out; }
         
@@ -179,12 +160,10 @@
         }
         .ob-row:last-child { border: none; }
         
-        /* Nombre Supermercado (NO Clickeable) */
         .ob-store { font-weight: 600; display: flex; align-items: center; gap: 10px; color: var(--text-main); cursor: default; }
-        
         .dot { width: 8px; height: 8px; border-radius: 50%; }
         
-        /* PRECIO (Clickeable) */
+        /* PRECIO LINK */
         .price-link { 
             text-decoration: none; color: var(--text-main); 
             font-family: 'Roboto Mono'; font-size: 15px; 
@@ -192,12 +171,10 @@
             background: rgba(0,0,0,0.03); border: 1px solid transparent;
             transition: 0.2s; display: flex; align-items: center; gap: 8px;
         }
-        .price-link:hover { background: rgba(255, 204, 0, 0.2); border-color: var(--accent); color: #000; }
-        body.dark-mode .price-link:hover { color: #fff; }
+        .price-link:hover { background: rgba(41, 98, 255, 0.1); border-color: var(--accent); color: var(--accent); }
         
         .best-val { color: var(--color-good); font-weight: 700; background: rgba(0, 230, 118, 0.1); border-color: rgba(0, 230, 118, 0.3); } 
         
-        /* TACHADO PARA SIN PRECIO */
         .no-price { 
             color: var(--text-muted); font-style: italic; opacity: 0.6; 
             text-decoration: line-through; font-size: 12px; pointer-events: none; background: transparent;
@@ -215,10 +192,9 @@
         .dev-link { 
             color: var(--accent); text-decoration: none; 
             font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
-            background: rgba(255,204,0,0.1); padding: 4px 8px; border-radius: 4px;
         }
 
-        /* NAVBAR INFERIOR (Amarillo Activo) */
+        /* NAVBAR */
         .bottom-nav {
             position: absolute; bottom: 0; width: 100%; max-width: 600px;
             background: var(--bg-nav); border-top: 1px solid var(--border);
@@ -233,7 +209,7 @@
         }
         .nav-item i { font-size: 18px; }
         .nav-item.active { color: var(--text-main); font-weight: 800; }
-        .nav-item.active i { color: var(--accent); transform: translateY(-2px); transition: 0.2s; filter: drop-shadow(0 2px 4px rgba(255, 200, 0, 0.4)); }
+        .nav-item.active i { color: var(--accent); transform: translateY(-2px); transition: 0.2s; }
 
         /* ESTADOS */
         .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); font-size: 14px; line-height: 1.6; }
@@ -248,15 +224,13 @@
     <div class="app-container">
         <header>
             <div class="top-row">
-                <!-- CAMBIO AQUÍ: El link ahora apunta a tu dominio -->
-                <a href="https://tradingchango.com.ar" class="logo-link">
+                <a href="https://facundotomasella.github.io/comparadordeprecios/" class="logo-link">
                     <div class="logo">
                         <div class="logo-icon">
-                            <span class="candle-wick"></span>
-                            <span class="candle-stick"></span>
                             <i class="fa-solid fa-cart-shopping"></i>
+                            <i class="fa-solid fa-chart-line"></i>
                         </div>
-                        TradingChango.com.ar
+                        TradingChango
                     </div>
                 </a>
                 <button class="theme-btn" onclick="toggleTheme()">
@@ -325,11 +299,9 @@
                     });
                 });
                 
-                // Tema inicial (Default es Light/Cálido ahora)
+                // Tema inicial (Día por defecto)
                 if (localStorage.getItem('theme') === 'dark') {
                     document.body.classList.add('dark-mode');
-                } else {
-                    document.body.classList.remove('dark-mode');
                 }
                 updateThemeIcon();
                 
@@ -379,7 +351,10 @@
                 card.innerHTML = `
                     <div class="ticker-card">
                         <div class="ticker-info" onclick="toggleDetail('${item.id}')">
-                            <div class="t-left"><span class="t-symbol">${item.ticker}</span><span class="t-name">${item.n}</span></div>
+                            <div class="t-left">
+                                <span class="t-symbol">${item.ticker}</span>
+                                <span class="t-name">${item.n}</span>
+                            </div>
                             <div class="t-right">
                                 <span class="t-price">$${format(stats.min)}</span><br>
                                 <span class="t-change ${stats.trendClass}">${stats.icon} ${stats.spread}%</span>
@@ -387,7 +362,10 @@
                         </div>
                         <div class="fav-btn ${starClass}" onclick="toggleFav('${item.id}', this)"><i class="${starIcon}"></i></div>
                     </div>
-                    <div id="detail-${item.id}" class="order-book">${detailHtml}</div>
+                    <div id="detail-${item.id}" class="order-book">
+                        <div class="ob-header"><span>Market</span><span>Precio</span></div>
+                        ${detailHtml}
+                    </div>
                 `;
                 container.appendChild(card);
             });
@@ -400,24 +378,25 @@
                 const p = prices[i];
                 let rawLink = (links && links[i]) ? links[i] : "";
                 
-                // Si el link específico existe y es válido, úsalo. Si no, usa el Home.
-                let targetUrl = (rawLink && rawLink.startsWith("http")) ? rawLink : store.home;
+                // LÓGICA DE REDIRECCIÓN INTELIGENTE
+                let targetUrl = store.home; // Por defecto Home
                 
-                // Excepción Coto: Siempre Home
-                if (i === 0) targetUrl = store.home;
-
+                // Si hay link específico y no es Coto (índice 0), usar producto
+                if (i !== 0 && rawLink && rawLink.startsWith("http")) {
+                    targetUrl = rawLink;
+                }
+                
                 let val = `$${format(p)}`;
                 let styleClass = "price-link";
                 let dotColor = store.color;
                 
                 let href = `href="${targetUrl}" target="_blank"`;
-                let cursor = "";
 
                 if (!p || p === 0) { 
                     val = "SIN PRECIO"; 
                     styleClass += " no-price"; 
                     dotColor = "#444"; 
-                    href = "";
+                    href = ""; // Sin link si no hay precio
                 }
                 else if (p === best) { 
                     styleClass += " best-val"; 
@@ -453,13 +432,12 @@
             if (priceYesterday > 0) {
                 diff = ((minToday - priceYesterday) / priceYesterday) * 100;
                 
-                // LÓGICA CONSUMIDOR:
                 if (diff > 0) { 
-                    trendClass = "trend-up";   // Rojo (Malo, subió)
+                    trendClass = "trend-up"; // Rojo (Subió)
                     icon = "▲"; 
                 } 
                 else if (diff < 0) { 
-                    trendClass = "trend-down"; // Verde (Bueno, bajó)
+                    trendClass = "trend-down"; // Verde (Bajó)
                     icon = "▼"; 
                 }
             } 
