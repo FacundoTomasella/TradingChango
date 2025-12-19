@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#ffffff">
-    
     <title>TradingChango | Tradeá los Precios</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>">
     
@@ -30,13 +29,13 @@
             font-family: '-apple-system', 'Inter', sans-serif; 
             padding-bottom: 90px; transition: background 0.3s, color 0.3s;
             display: flex; flex-direction: column; align-items: center;
-            overflow-x: hidden; /* Fix para el corrido lateral */
+            overflow-x: hidden; width: 100vw;
         }
 
         .app-container { 
             width: 100%; max-width: 600px; min-height: 100vh; 
             background: var(--bg-app); border-left: 1px solid var(--border); border-right: 1px solid var(--border); 
-            position: relative; margin: 0 auto; 
+            position: relative; margin: 0 auto;
         }
 
         header { position: sticky; top: 0; z-index: 50; background: var(--bg-app); border-bottom: 1px solid var(--border); padding: 15px 20px; }
@@ -45,6 +44,7 @@
         .logo-icon-wrapper { position: relative; display: flex; align-items: center; justify-content: center; height: 24px; width: 30px; }
         .logo-icon-wrapper .fa-cart-shopping { font-size: 18px; }
         .logo-icon-wrapper .fa-arrow-trend-up { font-size: 12px; color: var(--color-good); position: absolute; top: -4px; right: -2px; background: var(--bg-app); padding: 1px; border-radius: 50%; }
+        
         .theme-btn { background: none; border: none; color: var(--text-main); font-size: 20px; cursor: pointer; }
         #searchInput { width: 100%; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-main); padding: 12px 12px 12px 42px; border-radius: 8px; font-size: 15px; }
         .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 16px; }
@@ -52,11 +52,10 @@
         .trend-filters { display: flex; gap: 10px; margin-top: 12px; }
         .trend-btn { flex: 1; padding: 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-app); font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; }
         #btnDown { color: var(--color-good); } #btnUp { color: var(--color-bad); }
-        .trend-btn.active-down { background: var(--color-good) !important; color: white !important; }
-        .trend-btn.active-up { background: var(--color-bad) !important; color: white !important; }
+        .trend-btn.active-down { background: var(--color-good) !important; color: white !important; border-color: var(--color-good); }
+        .trend-btn.active-up { background: var(--color-bad) !important; color: white !important; border-color: var(--color-bad); }
 
         .ticker-card { border-bottom: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: var(--bg-app); }
-        .ticker-info { flex-grow: 1; display: flex; align-items: center; justify-content: space-between; padding-right: 15px; }
         .t-left { display: flex; flex-direction: column; gap: 3px; }
         .t-symbol { font-family: 'Roboto Mono'; font-weight: 700; font-size: 16px; }
         .t-name { font-size: 13px; color: var(--text-muted); max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
@@ -72,7 +71,7 @@
         .ob-header-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
         .ob-tabs { display: flex; gap: 15px; }
         .ob-tab { background: none; border: none; color: var(--text-muted); padding: 10px 0; font-size: 11px; font-weight: 700; cursor: pointer; text-transform: uppercase; border-bottom: 2px solid transparent; }
-        .ob-tab.active { color: var(--text-main); border-bottom-color: var(--text-main); }
+        .ob-tab.active { color: var(--text-main); border-bottom-color: var(--text-main); font-weight: 800; }
         
         .range-filters { display: flex; gap: 4px; }
         .range-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); font-size: 10px; font-weight: 700; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
@@ -87,10 +86,8 @@
 
         .app-footer { text-align: center; padding: 40px 20px; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border); }
         
-        /* NAVBAR BLACK & WHITE */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 600px; background: var(--bg-nav); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; }
-        .nav-item { background: none; border: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; font-size: 10px; gap: 5px; cursor: pointer; width: 25%; transition: 0.2s; }
-        .nav-item i { font-size: 18px; }
+        .nav-item { background: none; border: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; font-size: 10px; gap: 5px; cursor: pointer; width: 25%; transition: 0.2s; font-weight: 500; }
         .nav-item.active { color: var(--text-main); font-weight: 800; }
         
         .loader { text-align: center; padding: 50px; color: var(--text-muted); font-family: 'Roboto Mono'; font-size: 12px; }
@@ -98,7 +95,7 @@
         .chart-wrapper { width: 100%; height: 260px; padding-top: 10px; }
     </style>
 </head>
-<body onload="window.scrollTo(0, 0);">
+<body onload="window.scrollTo(0,0)">
 
     <div class="app-container">
         <header>
@@ -141,13 +138,11 @@
 
         async function init() {
             try {
-                // Obtenemos productos
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/productos?select=*`, {
                     headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
                 });
                 const rows = await res.json();
                 
-                // Obtenemos historial de hace 7 días para el % de cambio
                 const date7d = new Date(); date7d.setDate(date7d.getDate() - 7);
                 const resH = await fetch(`${SUPABASE_URL}/rest/v1/historial_precios?fecha=gte.${date7d.toISOString().split('T')[0]}`, {
                     headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
@@ -156,16 +151,13 @@
 
                 flatList = rows.map(r => {
                     const prodHistory = historyData.filter(h => h.nombre_producto === r.nombre).sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
-                    const price7d = prodHistory.length > 0 ? prodHistory[0].precio_minimo : 0;
-                    
                     return {
                         id: r.id, n: r.nombre.trim(), cat: r.categoria, ticker: generateTicker(r.nombre),
                         p: [r.p_coto||0, r.p_carrefour||0, r.p_dia||0, r.p_jumbo||0],
-                        h7d: price7d, // Guardamos precio de referencia 7d
+                        h7d: prodHistory.length > 0 ? prodHistory[0].precio_minimo : 0,
                         u: [r.u_coto, r.u_carrefour, r.u_dia, r.u_jumbo]
                     }
                 });
-                
                 if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
                 updateThemeIcon();
                 document.getElementById('loader').style.display = 'none';
@@ -177,9 +169,15 @@
             const container = document.getElementById('tickerList');
             const term = document.getElementById('searchInput').value.toUpperCase();
             container.innerHTML = '';
-            let dataToShow = flatList.filter(i => currentTab === 'favs' ? favorites.includes(i.id) : i.cat === (currentTab === 'carnes' ? 'Carnes' : currentTab === 'verdu' ? 'Verdu' : 'Varios'));
+
+            // FIX FILTRADO CATEGORIAS
+            let dataToShow = flatList.filter(i => {
+                if (currentTab === 'favs') return favorites.includes(i.id);
+                const tabMap = { 'carnes': 'Carnes', 'verdu': 'Verdu', 'varios': 'Varios' };
+                return i.cat === tabMap[currentTab];
+            });
+
             if (term) dataToShow = dataToShow.filter(i => i.n.toUpperCase().includes(term) || i.ticker.includes(term));
-            
             if (currentTrendFilter) {
                 dataToShow = dataToShow.filter(item => {
                     const stats = getStats(item.p, item.h7d);
@@ -202,10 +200,7 @@
                     </div>
                     <div id="detail-${item.id}" class="order-book">
                         <div class="ob-header-row">
-                            <div class="ob-tabs">
-                                <button class="ob-tab active" id="tab-m-${item.id}" onclick="switchObTab('${item.id}', 'market')">Market</button>
-                                <button class="ob-tab" id="tab-g-${item.id}" onclick="switchObTab('${item.id}', 'graph')">Gráfico</button>
-                            </div>
+                            <div class="ob-tabs"><button class="ob-tab active" id="tab-m-${item.id}" onclick="switchObTab('${item.id}', 'market')">Market</button><button class="ob-tab" id="tab-g-${item.id}" onclick="switchObTab('${item.id}', 'graph')">Gráfico</button></div>
                             <div class="range-filters" id="rf-${item.id}" style="display:none">
                                 <button class="range-btn active" onclick="updateChart('${item.id}','${item.n}',7,this)">7D</button>
                                 <button class="range-btn" onclick="updateChart('${item.id}','${item.n}',15,this)">15D</button>
@@ -224,13 +219,11 @@
 
         async function updateChart(id, name, days, btn) {
             if(btn) { btn.parentElement.querySelectorAll('.range-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
-            
             const dateLimit = new Date(); dateLimit.setDate(dateLimit.getDate() - days);
             const res = await fetch(`${SUPABASE_URL}/rest/v1/historial_precios?nombre_producto=eq.${encodeURIComponent(name.trim())}&fecha=gte.${dateLimit.toISOString().split('T')[0]}&order=fecha.asc`, {
                 headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
             });
             const data = await res.json();
-            
             const ctx = document.getElementById(`canvas-${id}`).getContext('2d');
             const isDark = document.body.classList.contains('dark-mode');
             const color = isDark?'#ffffff':'#131722';
@@ -239,35 +232,18 @@
             window['ch'+id] = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: data.map(d => {
-                        const date = new Date(d.fecha + 'T12:00:00');
-                        return `${date.getDate()} ${MONTHS[date.getMonth()]}`;
-                    }),
-                    datasets: [{
-                        data: data.map(d => d.precio_minimo),
-                        borderColor: color, borderWidth: 1.5,
-                        pointStyle: 'circle', pointRadius: 5, pointBorderWidth: 2,
-                        pointBackgroundColor: 'transparent', pointBorderColor: color,
-                        fill: false, tension: 0.1
-                    }]
+                    labels: data.map(d => { const dt = new Date(d.fecha + 'T12:00:00'); return `${dt.getDate()} ${MONTHS[dt.getMonth()]}`; }),
+                    datasets: [{ data: data.map(d => d.precio_minimo), borderColor: color, borderWidth: 1.2, pointStyle: 'circle', pointRadius: 5, pointBorderWidth: 1.5, pointBackgroundColor: 'transparent', pointBorderColor: color, fill: false, tension: 0.1 }]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
-                    interaction: { intersect: false, mode: 'index' },
                     plugins: { 
                         legend: { display: false },
                         tooltip: {
-                            backgroundColor: '#1e1e1e', titleFont: { size: 12 }, bodyFont: { size: 13 },
-                            padding: 12, cornerRadius: 8, displayColors: false,
+                            backgroundColor: '#2a2a2a', padding: 12, cornerRadius: 50, displayColors: false,
                             callbacks: {
-                                title: (c) => {
-                                    const d = data[c[0].dataIndex].fecha.split('-');
-                                    return `${parseInt(d[2])} ${MONTHS[parseInt(d[1])-1]} ${d[0]}`;
-                                },
-                                label: (c) => {
-                                    const item = data[c.dataIndex];
-                                    return [`${item.supermercado}: $${format(item.precio_minimo)}`];
-                                }
+                                title: (c) => { const d = data[c[0].dataIndex].fecha.split('-'); return `${parseInt(d[2])} ${MONTHS[parseInt(d[1])-1]} ${d[0]}`; },
+                                label: (c) => { const item = data[c.dataIndex]; return [`${item.supermercado}: $${format(item.precio_minimo)}`]; }
                             }
                         }
                     },
@@ -284,7 +260,6 @@
             if (valid.length === 0) return { min: 0 };
             const minToday = Math.min(...valid);
             let diff = 0, trendClass = "trend-neutral", icon = "-", isUp = false, isDown = false;
-            
             if (h7d > 0) {
                 diff = ((minToday - h7d) / h7d) * 100;
                 if (diff > 0.1) { trendClass = "trend-up"; icon = "▲"; isUp = true; }
@@ -298,8 +273,6 @@
             const isDark = document.body.classList.contains('dark-mode');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
             updateThemeIcon();
-            
-            // Actualizamos colores de gráficos abiertos sin recargar
             const color = isDark ? '#ffffff' : '#131722';
             Object.keys(window).forEach(key => {
                 if(key.startsWith('ch') && window[key] instanceof Chart) {
@@ -313,13 +286,6 @@
             });
         }
 
-        // --- RESTO DE FUNCIONES MANTENIDAS ---
-        function renderMarket(item, min) {
-            return STORES.map((s, i) => {
-                const p = item.p[i];
-                return `<div class="ob-row"><div class="ob-store"><div class="dot" style="background:${p>0?s.color:'#444'}"></div>${s.name}</div><a href="${p>0?(item.u[i]||s.home):'#'}" target="_blank" class="price-link ${p===min?'best-val':''} ${p===0?'no-price':''}">$${format(p)}</a></div>`;
-            }).join('');
-        }
         function switchObTab(id, type) {
             document.getElementById(`btn-m-${id}`).classList.toggle('active', type==='market');
             document.getElementById(`btn-g-${id}`).classList.toggle('active', type==='graph');
@@ -328,12 +294,21 @@
             document.getElementById(`rf-${id}`).style.display = type==='graph'?'flex':'none';
             if(type==='graph') { const n = flatList.find(p=>p.id==id).n; updateChart(id, n, 7); }
         }
+
+        function renderMarket(item, min) {
+            return STORES.map((s, i) => {
+                const p = item.p[i];
+                return `<div class="ob-row"><div class="ob-store"><div class="dot" style="background:${p>0?s.color:'#444'}"></div>${s.name}</div><a href="${p>0?(item.u[i]||s.home):'#'}" target="_blank" class="price-link ${p===min?'best-val':''} ${p===0?'no-price':''}">$${format(p)}</a></div>`;
+            }).join('');
+        }
+
         function toggleFav(id, btn) {
             if(favorites.includes(id)) favorites = favorites.filter(f=>f!==id);
             else favorites.push(id);
             localStorage.setItem('fav_tickers', JSON.stringify(favorites));
             renderView();
         }
+
         function setTrendFilter(t) { currentTrendFilter = (currentTrendFilter === t) ? null : t; renderView(); }
         function setTab(t, btn) { currentTab=t; document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); btn.classList.add('active'); renderView(); }
         function toggleDetail(id) { document.getElementById(`detail-${id}`).classList.toggle('open'); }
