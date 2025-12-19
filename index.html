@@ -25,7 +25,7 @@
             --accent: #ffffff;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-app); color: var(--text-main); font-family: '-apple-system', 'BlinkMacSystemFont', 'Inter', sans-serif; padding-bottom: 90px; transition: background 0.3s, color 0.3s; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; width: 100%; }
+        body { background-color: var(--bg-app); color: var(--text-main); font-family: '-apple-system', 'BlinkMacSystemFont', 'Inter', sans-serif; padding-bottom: 90px; transition: background 0.3s, color 0.3s; display: flex; flex-direction: column; align-items: center; }
         .app-container { width: 100%; max-width: 600px; min-height: 100vh; background: var(--bg-app); border-left: 1px solid var(--border); border-right: 1px solid var(--border); position: relative; }
         header { position: sticky; top: 0; z-index: 50; background: var(--bg-app); border-bottom: 1px solid var(--border); padding: 15px 20px; }
         .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
@@ -40,7 +40,7 @@
         #searchInput { width: 100%; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-main); padding: 12px 12px 12px 42px; border-radius: 8px; font-size: 15px; font-family: 'Inter', sans-serif; }
         .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 16px; }
 
-        /* TENDENCIA REQUERIDA */
+        /* TENDENCIA SEGÚN PEDIDO */
         .trend-filters { display: flex; gap: 10px; margin-top: 12px; }
         .trend-btn { flex: 1; padding: 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-app); font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; }
         #btnDown { color: var(--color-good); }
@@ -60,11 +60,10 @@
         .trend-up { color: white; background: var(--color-bad); } .trend-down { color: white; background: var(--color-good); } .trend-neutral { color: var(--text-muted); background: rgba(128,128,128,0.1); }
         .fav-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: flex-end; font-size: 20px; color: var(--border); transition: 0.2s; }
         .fav-btn.active { color: var(--star-gold); }
-        
         .order-book { display: none; background: var(--bg-card); padding: 5px 20px 20px 20px; border-bottom: 1px solid var(--border); }
         .order-book.open { display: block; animation: slideDown 0.2s ease-out; }
 
-        /* GRÁFICO */
+        /* GRÁFICO PROFESIONAL */
         .ob-header-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
         .ob-tabs { display: flex; gap: 12px; }
         .ob-tab { background: none; border: none; color: var(--text-muted); padding: 10px 0; font-size: 11px; font-weight: 700; cursor: pointer; text-transform: uppercase; border-bottom: 2px solid transparent; }
@@ -80,9 +79,10 @@
         .price-link { text-decoration: none; color: var(--text-main); font-family: 'Roboto Mono'; font-size: 15px; padding: 6px 10px; border-radius: 6px; background: rgba(0,0,0,0.03); }
         .best-val { color: var(--color-good); font-weight: 700; background: rgba(0, 230, 118, 0.1); border-color: rgba(0, 230, 118, 0.3); } 
         .no-price { color: var(--text-muted); text-decoration: line-through; opacity: 0.6; pointer-events: none; }
+        
         .app-footer { text-align: center; padding: 40px 20px; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border); }
         
-        /* NAVBAR BLACK & WHITE REQUERIDA */
+        /* NAVBAR BLACK & WHITE */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 600px; background: var(--bg-nav); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; }
         .nav-item { background: none; border: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; font-size: 10px; gap: 5px; cursor: pointer; width: 25%; font-weight: 500; transition: 0.2s; }
         .nav-item i { font-size: 18px; }
@@ -132,37 +132,38 @@
 
         async function init() {
             try {
-                // 1. CARGA DE PRODUCTOS
+                // 1. CARGA INMEDIATA DE PRODUCTOS
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/productos?select=*`, {
                     headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
                 });
                 const rows = await res.json();
                 
-                // 2. CARGA DE HISTORIAL PARA %
-                const d7 = new Date(); d7.setDate(d7.getDate() - 7);
-                const resH = await fetch(`${SUPABASE_URL}/rest/v1/historial_precios?fecha=gte.${d7.toISOString().split('T')[0]}`, {
-                    headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
-                });
-                const hData = await resH.json();
-
-                flatList = rows.map(r => {
-                    const h7 = hData.filter(h => h.nombre_producto === r.nombre).sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
-                    return {
-                        id: r.id, n: r.nombre.trim(), cat: r.categoria, ticker: generateTicker(r.nombre),
-                        p: [r.p_coto||0, r.p_carrefour||0, r.p_dia||0, r.p_jumbo||0],
-                        h7d: h7.length > 0 ? h7[0].precio_minimo : 0,
-                        u: [r.u_coto, r.u_carrefour, r.u_dia, r.u_jumbo]
-                    }
-                });
+                flatList = rows.map(r => ({
+                    id: r.id, n: r.nombre.trim(), cat: r.categoria, ticker: generateTicker(r.nombre),
+                    p: [r.p_coto||0, r.p_carrefour||0, r.p_dia||0, r.p_jumbo||0],
+                    h7d: 0, 
+                    u: [r.u_coto, r.u_carrefour, r.u_dia, r.u_jumbo]
+                }));
 
                 document.getElementById('loader').style.display = 'none';
                 if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
                 updateThemeIcon();
                 renderView();
-            } catch (e) { 
-                console.error(e);
-                document.getElementById('loader').innerText = "ERROR DE CONEXIÓN";
-            }
+
+                // 2. CARGA DEL HISTORIAL EN SEGUNDO PLANO
+                const d7 = new Date(); d7.setDate(d7.getDate() - 7);
+                const resH = await fetch(`${SUPABASE_URL}/rest/v1/historial_precios?fecha=gte.${d7.toISOString().split('T')[0]}`, {
+                    headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
+                });
+                const hData = await resH.json();
+                
+                flatList.forEach(item => {
+                    const h7 = hData.filter(h => h.nombre_producto === item.n).sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
+                    if(h7.length > 0) item.h7d = h7[0].precio_minimo;
+                });
+                renderView();
+
+            } catch (e) { console.error(e); }
         }
 
         function renderView() {
@@ -177,7 +178,6 @@
             });
             
             if (term) dataToShow = dataToShow.filter(i => i.n.toUpperCase().includes(term) || i.ticker.includes(term));
-            
             if (currentTrendFilter) {
                 dataToShow = dataToShow.filter(item => {
                     const stats = getStats(item.p, item.h7d);
@@ -200,10 +200,7 @@
                     </div>
                     <div id="detail-${item.id}" class="order-book">
                         <div class="ob-header-row">
-                            <div class="ob-tabs">
-                                <button class="ob-tab active" id="btn-m-${item.id}" onclick="switchObTab('${item.id}', 'market')">Market</button>
-                                <button class="ob-tab" id="btn-g-${item.id}" onclick="switchObTab('${item.id}', 'graph')">Gráfico</button>
-                            </div>
+                            <div class="ob-tabs"><button class="ob-tab active" id="tab-m-${item.id}" onclick="switchObTab('${item.id}', 'market')">Market</button><button class="ob-tab" id="tab-g-${item.id}" onclick="switchObTab('${item.id}', 'graph')">Gráfico</button></div>
                             <div class="range-filters" id="rf-${item.id}" style="display:none">
                                 <button class="range-btn active" onclick="updateChart('${item.id}','${item.n}',7,this)">7D</button>
                                 <button class="range-btn" onclick="updateChart('${item.id}','${item.n}',15,this)">15D</button>
@@ -238,8 +235,8 @@
                     labels: data.map(d => { const dt = new Date(d.fecha + 'T12:00:00'); return `${dt.getDate()} ${MONTHS[dt.getMonth()]}`; }),
                     datasets: [{ 
                         data: data.map(d => d.precio_minimo), 
-                        borderColor: color, borderWidth: 1.5,
-                        pointStyle: 'circle', pointRadius: 5, pointBorderWidth: 2,
+                        borderColor: color, borderWidth: 1.2,
+                        pointStyle: 'circle', pointRadius: 5, pointBorderWidth: 1.5,
                         pointBackgroundColor: 'transparent', pointBorderColor: color, 
                         fill: false, tension: 0.1 
                     }]
@@ -249,7 +246,7 @@
                     plugins: { 
                         legend: { display: false },
                         tooltip: {
-                            backgroundColor: '#2a2a2a', padding: 12, cornerRadius: 50, displayColors: false,
+                            backgroundColor: 'rgba(30,30,30,0.9)', padding: 12, cornerRadius: 50, displayColors: false,
                             callbacks: {
                                 title: (c) => { const d = data[c[0].dataIndex].fecha.split('-'); return `${parseInt(d[2])} ${MONTHS[parseInt(d[1])-1]} ${d[0]}`; },
                                 label: (c) => { const item = data[c.dataIndex]; return [`${item.supermercado}: $${format(item.precio_minimo)}`]; }
@@ -277,6 +274,13 @@
             return { min: minToday, spread: Math.abs(diff).toFixed(1), trendClass, icon, isUp, isDown };
         }
 
+        function toggleFav(id, btn) {
+            if(favorites.includes(id)) favorites = favorites.filter(f=>f!==id);
+            else favorites.push(id);
+            localStorage.setItem('fav_tickers', JSON.stringify(favorites));
+            renderView();
+        }
+
         function switchObTab(id, type) {
             document.getElementById(`btn-m-${id}`).classList.toggle('active', type==='market');
             document.getElementById(`btn-g-${id}`).classList.toggle('active', type==='graph');
@@ -286,33 +290,37 @@
             if(type==='graph') { const n = flatList.find(p=>p.id==id).n; updateChart(id, n, 7); }
         }
 
-        function renderMarket(item, min) {
-            const STORES = [{name:"COTO",color:"#ff3b30",home:"https://www.cotodigital.com.ar"},{name:"CARREFOUR",color:"#2962ff",home:"https://www.carrefour.com.ar"},{name:"DIA",color:"#ff3b30",home:"https://diaonline.supermercadosdia.com.ar"},{name:"JUMBO",color:"#00c853",home:"https://www.jumbo.com.ar"}];
-            return STORES.map((s, i) => {
-                const p = item.p[i];
-                return `<div class="ob-row"><div class="ob-store"><div class="dot" style="background:${p>0?s.color:'#444'}"></div>${s.name}</div><a href="${p>0?(item.u[i]||s.home):'#'}" target="_blank" class="price-link ${p===min?'best-val':''} ${p===0?'no-price':''}">$${format(p)}</a></div>`;
-            }).join('');
-        }
-
-        function toggleFav(id, btn) {
-            if(favorites.includes(id)) favorites = favorites.filter(f=>f!==id);
-            else favorites.push(id);
-            localStorage.setItem('fav_tickers', JSON.stringify(favorites));
-            renderView();
-        }
-
-        function setTrendFilter(t) { currentTrendFilter = (currentTrendFilter === t) ? null : t; 
+        function setTrendFilter(t) { 
+            currentTrendFilter = (currentTrendFilter === t) ? null : t; 
             document.getElementById('btnUp').classList.toggle('active-up', currentTrendFilter === 'up');
             document.getElementById('btnDown').classList.toggle('active-down', currentTrendFilter === 'down');
             renderView(); 
         }
         function setTab(t, btn) { currentTab=t; document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); btn.classList.add('active'); renderView(); }
         function toggleDetail(id) { document.getElementById(`detail-${id}`).classList.toggle('open'); }
+        function toggleTheme() { 
+            document.body.classList.toggle('dark-mode'); 
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode')?'dark':'light'); 
+            updateThemeIcon();
+            const color = document.body.classList.contains('dark-mode') ? '#ffffff' : '#131722';
+            Object.keys(window).forEach(key => {
+                if(key.startsWith('ch') && window[key] instanceof Chart) {
+                    window[key].options.scales.x.ticks.color = color;
+                    window[key].options.scales.y.ticks.color = color;
+                    window[key].update('none');
+                }
+            });
+        }
         function updateThemeIcon() { document.getElementById('themeIcon').className = document.body.classList.contains('dark-mode')?'fa-solid fa-sun':'fa-solid fa-moon'; }
+        function renderMarket(item, min) {
+            const S_LIST = [{name:"COTO",color:"#ff3b30",home:"https://www.cotodigital.com.ar"},{name:"CARREFOUR",color:"#2962ff",home:"https://www.carrefour.com.ar"},{name:"DIA",color:"#ff3b30",home:"https://diaonline.supermercadosdia.com.ar"},{name:"JUMBO",color:"#00c853",home:"https://www.jumbo.com.ar"}];
+            return S_LIST.map((s, i) => {
+                const p = item.p[i];
+                return `<div class="ob-row"><div class="ob-store"><div class="dot" style="background:${p>0?s.color:'#444'}"></div>${s.name}</div><a href="${p>0?(item.u[i]||s.home):'#'}" target="_blank" class="price-link ${p===min?'best-val':''} ${p===0?'no-price':''}">$${format(p)}</a></div>`;
+            }).join('');
+        }
         function generateTicker(n) { const c = n.toUpperCase().replace(/DE|EL|LA|CON|SIN|KG|GRS|ML|\W/g, " "); const p = c.split(" ").filter(w=>w.length>2); return p.length>=2 ? p[0].substring(0,2)+p[1].substring(0,2) : c.substring(0,4); }
         function format(n) { return new Intl.NumberFormat('es-AR').format(n); }
-        function toggleTheme() { document.body.classList.toggle('dark-mode'); localStorage.setItem('theme', document.body.classList.contains('dark-mode')?'dark':'light'); updateThemeIcon(); }
-        
         document.getElementById('searchInput').addEventListener('input', renderView);
         init();
     </script>
