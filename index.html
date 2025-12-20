@@ -37,10 +37,11 @@
             --accent: #ffffff;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-app); color: var(--text-main); font-family: '-apple-system', 'BlinkMacSystemFont', 'Inter', sans-serif; padding-bottom: 90px; transition: background 0.3s, color 0.3s; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; }
+        body { background-color: var(--bg-app); color: var(--text-main); font-family: '-apple-system', 'BlinkMacSystemFont', 'Inter', sans-serif; padding-bottom: 160px; transition: background 0.3s, color 0.3s; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; }
         .app-container { width: 100%; max-width: 600px; min-height: 100vh; background: var(--bg-app); border-left: 1px solid var(--border); border-right: 1px solid var(--border); position: relative; }
         
-        header { position: sticky; top: 0; z-index: 50; background: var(--bg-app); border-bottom: 1px solid var(--border); padding: 15px 20px; }
+        /* HEADER FIJO */
+        header { position: sticky; top: 0; z-index: 100; background: var(--bg-app); border-bottom: 1px solid var(--border); padding: 15px 20px; }
         .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .header-actions { display: flex; align-items: center; gap: 15px; }
         .logo-link { text-decoration: none; color: inherit; cursor: pointer; }
@@ -69,6 +70,12 @@
         .hero-section { text-align: center; padding: 25px 20px 20px 20px; border-bottom: 1px solid var(--border); display: none; }
         .hero-title { font-size: 20px; font-weight: 800; color: var(--text-main); margin-bottom: 8px; }
         .hero-subtitle { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+
+        /* PUBLICIDAD FIJA REQUERIDA */
+        .ad-space { width: 100%; min-height: 80px; border-bottom: 1px dashed var(--border); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-muted); text-align: center; padding: 10px; background: var(--bg-app); }
+        
+        #adTop { position: sticky; top: 125px; z-index: 40; border-top: 1px solid var(--border); }
+        #adBottom { position: fixed; bottom: 64px; width: 100%; max-width: 600px; z-index: 90; border-bottom: none; border-top: 1px dashed var(--border); height: 80px; }
 
         .ticker-list { padding: 0; }
         .ticker-card { border-bottom: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; position: relative; background: var(--bg-app); transition: background 0.2s; }
@@ -106,7 +113,9 @@
         .no-price { color: var(--text-muted); text-decoration: line-through; opacity: 0.6; pointer-events: none; }
         
         .app-footer { text-align: center; padding: 40px 20px; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border); }
-        
+        .footer-links { display: flex; justify-content: center; gap: 15px; margin-top: 12px; font-weight: 600; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 11px; cursor: pointer; }
+
         .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 600px; background: var(--bg-nav); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; }
         .nav-item { background: none; border: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; font-size: 10px; gap: 5px; cursor: pointer; width: 25%; font-weight: 500; transition: 0.2s; }
         .nav-item i { font-size: 18px; }
@@ -114,13 +123,13 @@
         
         .loader { text-align: center; padding: 50px; color: var(--text-muted); font-family: 'Roboto Mono'; font-size: 12px; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
-        .chart-wrapper { width: 100%; height: 260px; padding-top: 10px; position: relative; }
+        .chart-wrapper { width: 100%; height: 260px; padding-top: 5px; position: relative; }
         .no-data-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-card); display: flex; align-items: center; justify-content: center; z-index: 10; opacity: 0.9; }
-        .no-data-text { color: var(--text-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-        .chart-performance { font-size: 11px; font-weight: 700; margin-bottom: 5px; display: block; }
+        .no-data-text { color: var(--text-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .chart-performance { font-size: 11px; font-weight: 700; margin-bottom: 10px; display: block; }
     </style>
 </head>
-<body>
+<body onload="window.scrollTo(0,0)">
     <div class="app-container">
         <header>
             <div class="top-row">
@@ -146,10 +155,21 @@
             </div>
         </header>
 
+        <div id="adTop" class="ad-space">Google Adsense / Banner Superior</div>
+
         <div id="loader" class="loader">CONECTANDO A MERCADO...</div>
         <div id="tickerList" class="ticker-list"></div>
 
-        <footer class="app-footer">Desarrollado por <a href="https://bento.me/facutom" target="_blank" style="color:var(--text-main); text-decoration:none; font-weight:800;">Facu Tom</a></footer>
+        <div id="adBottom" class="ad-space ad-bottom">Publicidad / Banner Miembro Pro</div>
+
+        <footer class="app-footer">
+            <div>Desarrollado por <a href="https://bento.me/facutom" target="_blank" style="color:var(--text-main); text-decoration:none; font-weight:800;">Facu Tom</a></div>
+            <div class="footer-links">
+                <a href="#">Acerca de</a>
+                <a href="#">Términos</a>
+                <a href="#">Contacto</a>
+            </div>
+        </footer>
 
         <nav class="bottom-nav">
             <button class="nav-item" id="btn-carnes" onclick="setTab('carnes', this)"><i class="fa-solid fa-drumstick-bite"></i> Carnes</button>
@@ -192,23 +212,7 @@
                     }
                 });
                 document.getElementById('loader').style.display = 'none';
-                
-                // DEEP LINKING
-                const urlParams = new URLSearchParams(window.location.search);
-                const sharedId = urlParams.get('p');
-                if (sharedId) {
-                    const prod = flatList.find(i => i.id == sharedId);
-                    if (prod) {
-                        currentTab = prod.cat.toLowerCase();
-                        const btn = document.getElementById('btn-' + currentTab);
-                        if(btn) btn.classList.add('active');
-                        renderView();
-                        setTimeout(() => toggleDetail(sharedId), 500);
-                        return;
-                    }
-                }
-                
-                goHome(); // Iniciar en Home por defecto
+                goHome();
             } catch (e) { console.error(e); }
         }
 
@@ -243,7 +247,7 @@
             let dataToShow = flatList;
             
             if (currentTab === 'home') {
-                hero.style.display = term ? 'none' : 'block';
+                hero.style.display = (term || currentTrendFilter) ? 'none' : 'block';
                 if (term) dataToShow = flatList.filter(i => i.n.toUpperCase().includes(term) || i.ticker.includes(term));
             } else if (currentTab === 'favs') {
                 hero.style.display = 'none';
@@ -281,6 +285,8 @@
                                 <button class="range-btn active" id="rb-7-${item.id}" onclick="updateChart('${item.id}','${item.n}',7,this)">7D</button>
                                 <button class="range-btn" onclick="updateChart('${item.id}','${item.n}',15,this)">15D</button>
                                 <button class="range-btn" onclick="updateChart('${item.id}','${item.n}',30,this)">1M</button>
+                                <button class="range-btn" onclick="updateChart('${item.id}','${item.n}',90,this)">3M</button>
+                                <button class="range-btn" onclick="updateChart('${item.id}','${item.n}',180,this)">6M</button>
                                 <button class="range-btn" onclick="updateChart('${item.id}','${item.n}',365,this)">1Y</button>
                             </div>
                         </div>
@@ -308,7 +314,7 @@
             }
 
             const firstP = data[0].precio_minimo; const lastP = data[data.length-1].precio_minimo; const diffP = (((lastP - firstP) / firstP) * 100).toFixed(1);
-            let label = days === 7 ? 'últimos 7 días' : days === 15 ? 'últimos 15 días' : days === 30 ? 'último mes' : 'último año';
+            let label = days === 7 ? 'últimos 7 días' : days === 15 ? 'últimos 15 días' : days === 30 ? 'último mes' : days === 90 ? 'últimos 3 meses' : days === 180 ? 'últimos 6 meses' : 'último año';
             perfEl.style.color = diffP >= 0 ? 'var(--color-bad)' : 'var(--color-good)';
             perfEl.innerText = `${diffP > 0 ? '+' : ''}${diffP}% ${label}`;
 
@@ -365,35 +371,10 @@
         }
 
         function closeAllDetails() { document.querySelectorAll('.order-book.open').forEach(ob => ob.classList.remove('open')); openId = null; }
-        
-        function toggleTheme() { 
-            closeAllDetails(); 
-            document.documentElement.classList.toggle('dark-mode'); 
-            localStorage.setItem('theme', document.documentElement.classList.contains('dark-mode')?'dark':'light'); 
-            updateThemeIcon(); 
-        }
-
-        function toggleDetail(id) { 
-            const el = document.getElementById(`detail-${id}`); 
-            const wasOpen = el.classList.contains('open'); 
-            closeAllDetails(); 
-            if (!wasOpen) { el.classList.add('open'); openId = id; switchObTab(id, 'market'); } 
-        }
-
-        function toggleFav(id, btn) { 
-            if(favorites.includes(id)) favorites = favorites.filter(f=>f!==id); else favorites.push(id); 
-            localStorage.setItem('fav_tickers', JSON.stringify(favorites)); 
-            if(currentTab === 'favs') { renderView(); } 
-            else { btn.classList.toggle('active'); btn.querySelector('i').className = favorites.includes(id) ? 'fa-solid fa-star' : 'fa-regular fa-star'; }
-        }
-
-        function getStats(p, h) { 
-            const valid = p.filter(v=>v>0); if(valid.length===0) return {min:0}; 
-            const min = Math.min(...valid); let diff=0, trendClass="trend-neutral", icon="-", isUp=false, isDown=false; 
-            if(h>0){ diff = ((min-h)/h)*100; if(diff>0.1){ trendClass="trend-up"; icon="▲"; isUp=true; } else if(diff<-0.1){ trendClass="trend-down"; icon="▼"; isDown=true; } } 
-            return {min, spread:Math.abs(diff).toFixed(1), trendClass, icon, isUp, isDown}; 
-        }
-
+        function toggleTheme() { closeAllDetails(); document.documentElement.classList.toggle('dark-mode'); localStorage.setItem('theme', document.documentElement.classList.contains('dark-mode')?'dark':'light'); updateThemeIcon(); }
+        function toggleDetail(id) { const el = document.getElementById(`detail-${id}`); const wasOpen = el.classList.contains('open'); closeAllDetails(); if (!wasOpen) { el.classList.add('open'); openId = id; switchObTab(id, 'market'); } }
+        function toggleFav(id, btn) { if(favorites.includes(id)) favorites = favorites.filter(f=>f!==id); else favorites.push(id); localStorage.setItem('fav_tickers', JSON.stringify(favorites)); if(currentTab === 'favs') { renderView(); } else { btn.classList.toggle('active'); btn.querySelector('i').className = favorites.includes(id) ? 'fa-solid fa-star' : 'fa-regular fa-star'; } }
+        function getStats(p, h) { const valid = p.filter(v=>v>0); if(valid.length===0) return {min:0}; const min = Math.min(...valid); let diff=0, trendClass="trend-neutral", icon="-", isUp=false, isDown=false; if(h>0){ diff = ((min-h)/h)*100; if(diff>0.1){ trendClass="trend-up"; icon="▲"; isUp=true; } else if(diff<-0.1){ trendClass="trend-down"; icon="▼"; isDown=true; } } return {min, spread:Math.abs(diff).toFixed(1), trendClass, icon, isUp, isDown}; }
         function switchObTab(id, type) {
             const m = document.getElementById(`view-m-${id}`), g = document.getElementById(`view-g-${id}`), rf = document.getElementById(`rf-${id}`), btnM = document.getElementById(`tab-m-${id}`), btnG = document.getElementById(`tab-g-${id}`);
             if(!m) return;
@@ -406,24 +387,12 @@
                 updateChart(id, n, 7); 
             }
         }
-
         function renderMarket(item, min) {
             const STORES = [{name:"COTO",color:"#ff3b30",home:"https://www.cotodigital.com.ar"},{name:"CARREFOUR",color:"#2962ff",home:"https://www.carrefour.com.ar"},{name:"DIA",color:"#ff3b30",home:"https://diaonline.supermercadosdia.com.ar"},{name:"JUMBO",color:"#00c853",home:"https://www.jumbo.com.ar"}];
             return STORES.map((s, i) => { const p = item.p[i]; return `<div class="ob-row"><div class="ob-store"><div class="dot" style="background:${p>0?s.color:'#444'}"></div>${s.name}</div><a href="${p>0?(item.u[i]||s.home):'#'}" target="_blank" class="price-link ${p===min?'best-val':''} ${p===0?'no-price':''}">$${format(p)}</a></div>`; }).join('');
         }
-
-        function setTrendFilter(t) { closeAllDetails(); currentTrendFilter = (currentTrendFilter === t) ? null : t; document.getElementById('btnUp').classList.toggle('active-up', currentTrendFilter === 'up'); document.getElementById('btnDown').classList.toggle('active-down', currentTrendFilter === 'down'); renderView(); }
-        
-        function setTab(t, btn) { 
-            closeAllDetails(); 
-            currentTab=t; 
-            localStorage.setItem('last_tab', t);
-            window.scrollTo(0,0);
-            document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); 
-            if(btn) btn.classList.add('active'); 
-            renderView(); 
-        }
-
+        function setTrendFilter(t) { goHome(); currentTrendFilter = (currentTrendFilter === t) ? null : t; document.getElementById('btnUp').classList.toggle('active-up', currentTrendFilter === 'up'); document.getElementById('btnDown').classList.toggle('active-down', currentTrendFilter === 'down'); renderView(); }
+        function setTab(t, btn) { goHome(); currentTab=t; localStorage.setItem('last_tab', t); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); if(btn) btn.classList.add('active'); renderView(); }
         function updateThemeIcon() { document.getElementById('themeIcon').className = document.documentElement.classList.contains('dark-mode')?'fa-solid fa-sun':'fa-solid fa-moon'; }
         function generateTicker(n) { const cleanN = n.toUpperCase().replace(/DE|EL|LA|CON|SIN|KG|GRS|ML|\W/g, ""); return cleanN.substring(0, 4); }
         function format(n) { return new Intl.NumberFormat('es-AR').format(n); }
