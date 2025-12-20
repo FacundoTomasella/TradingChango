@@ -60,8 +60,6 @@
         .t-left { display: flex; flex-direction: column; gap: 3px; }
         .t-symbol { font-family: 'Roboto Mono', monospace; font-weight: 700; font-size: 16px; letter-spacing: -0.5px; }
         .t-name { font-size: 13px; color: var(--text-muted); max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
-        .t-brand-link { color: var(--accent); text-decoration: underline; cursor: pointer; }
-
         .t-right { text-align: right; }
         .t-price { font-family: 'Roboto Mono', monospace; font-weight: 700; font-size: 16px; }
         .t-change { font-family: 'Roboto Mono'; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 6px; display: inline-block; margin-top: 4px; }
@@ -76,6 +74,7 @@
         .ob-tabs { display: flex; gap: 12px; align-items: center; }
         .ob-tab { background: none; border: none; color: var(--text-muted); padding: 10px 0; font-size: 11px; font-weight: 700; cursor: pointer; text-transform: uppercase; border-bottom: 2px solid transparent; }
         .ob-tab.active { color: var(--text-main); border-bottom-color: var(--text-main); font-weight: 800; }
+        
         .share-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px; padding: 5px; margin-left: 5px; }
 
         .range-filters { display: flex; gap: 4px; }
@@ -98,10 +97,12 @@
         .nav-item.active { color: var(--text-main); font-weight: 800; }
         
         .loader { text-align: center; padding: 50px; color: var(--text-muted); font-family: 'Roboto Mono'; font-size: 12px; }
-        .chart-wrapper { width: 100%; height: 260px; padding-top: 10px; position: relative; }
+        .chart-wrapper { width: 100%; height: 260px; padding-top: 5px; position: relative; }
         .no-data-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-card); display: flex; align-items: center; justify-content: center; z-index: 10; opacity: 0.9; }
         .no-data-text { color: var(--text-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-        .chart-performance { font-size: 11px; font-weight: 700; margin-bottom: 5px; display: block; }
+        
+        /* FLUCTUACION ARRIBA */
+        .chart-performance { font-size: 11px; font-weight: 700; margin-bottom: 8px; display: block; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -140,7 +141,7 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnaW5yYXlsZHZraGdvZHZmaHRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYwODEzMzcsImV4cCI6MjA4MTY1NzMzN30.hRp7YjVymPnsqbwh8dJjfgKFg77cdd0A5o-ETWYgeiw';
         const MONTHS = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
 
-        let flatList = [], favorites = JSON.parse(localStorage.getItem('fav_tickers')) || [], currentTab = localStorage.getItem('last_tab') || 'carnes', currentTrendFilter = null, openId = null, currentBrandFilter = null;
+        let flatList = [], favorites = JSON.parse(localStorage.getItem('fav_tickers')) || [], currentTab = localStorage.getItem('last_tab') || 'carnes', currentTrendFilter = null, openId = null;
 
         async function init() {
             try {
@@ -153,35 +154,42 @@
                     headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
                 });
                 const hData = await resH.json();
+                
+                // Generar tickers únicos verificando duplicados
+                const usedTickers = new Set();
                 flatList = rows.map(r => {
                     const h7 = hData.filter(h => h.nombre_producto === r.nombre).sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
+                    let ticker = generateTicker(r.nombre);
+                    // Si el ticker ya existe, le agregamos el ID para hacerlo único
+                    if(usedTickers.has(ticker)) {
+                        ticker = (ticker.substring(0,2) + r.id.toString().slice(-2)).toUpperCase();
+                    }
+                    usedTickers.add(ticker);
+
                     return {
-                        id: r.id, n: r.nombre.trim(), cat: r.categoria, marca: r.marca || "",
-                        ticker: generateTicker(r.nombre, r.marca),
+                        id: r.id, n: r.nombre.trim(), cat: r.categoria, ticker: ticker,
                         p: [r.p_coto||0, r.p_carrefour||0, r.p_dia||0, r.p_jumbo||0],
                         h7d: h7.length > 0 ? h7[0].precio_minimo : 0,
                         u: [r.u_coto, r.u_carrefour, r.u_dia, r.u_jumbo]
                     }
                 });
-                document.getElementById('loader').style.display = 'none';
                 
-                // Restaurar pestaña activa visualmente
+                document.getElementById('loader').style.display = 'none';
                 const activeBtn = document.getElementById('btn-tab-' + currentTab);
                 if(activeBtn) {
                     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                     activeBtn.classList.add('active');
                 }
-
                 renderView();
 
-                // LÓGICA COMPARTIR
+                // DEEP LINKING COMPARTIR
                 const urlParams = new URLSearchParams(window.location.search);
                 const sharedId = urlParams.get('p');
                 if (sharedId) {
                     const prod = flatList.find(i => i.id == sharedId);
                     if (prod) {
-                        const targetTab = prod.cat.toLowerCase().trim() === 'carnes' ? 'carnes' : prod.cat.toLowerCase().trim() === 'verdu' ? 'verdu' : 'varios';
-                        setTab(targetTab, document.getElementById('btn-tab-' + targetTab));
+                        const t = prod.cat.toLowerCase().trim();
+                        setTab(t === 'carnes' ? 'carnes' : t === 'verdu' ? 'verdu' : 'varios', document.getElementById('btn-tab-' + t));
                         setTimeout(() => toggleDetail(sharedId), 500);
                     }
                 }
@@ -196,21 +204,14 @@
             
             let dataToShow = flatList;
 
-            // Filtro por pestaña (Solo si no hay búsqueda global o marca)
             if (currentTab === 'favs') {
                 dataToShow = flatList.filter(i => favorites.includes(i.id));
-            } else if (!term && !currentBrandFilter) {
+            } else if (term) {
+                // Buscador Global
+                dataToShow = flatList.filter(i => i.n.toUpperCase().includes(term) || i.ticker.includes(term));
+            } else {
+                // Filtro Categoría normal
                 dataToShow = flatList.filter(i => i.cat.toLowerCase().trim() === catMap[currentTab].toLowerCase());
-            }
-
-            // Filtro por Marca (Si está activo)
-            if (currentBrandFilter) {
-                dataToShow = dataToShow.filter(i => i.marca.toUpperCase() === currentBrandFilter.toUpperCase());
-            }
-
-            // Buscador Global (En todas las categorías si no es favs)
-            if (term) {
-                dataToShow = dataToShow.filter(i => i.n.toUpperCase().includes(term) || i.ticker.includes(term) || i.marca.toUpperCase().includes(term));
             }
             
             if (currentTrendFilter) dataToShow = dataToShow.filter(item => { const stats = getStats(item.p, item.h7d); return currentTrendFilter === 'up' ? stats.isUp : stats.isDown; });
@@ -218,21 +219,16 @@
             dataToShow.forEach(item => {
                 const stats = getStats(item.p, item.h7d);
                 if (stats.min === 0) return;
-                const isFav = favorites.includes(item.id);
-                const isOpen = openId == item.id;
                 const card = document.createElement('div');
                 card.innerHTML = `
                     <div class="ticker-card">
                         <div class="ticker-info" onclick="toggleDetail('${item.id}')">
-                            <div class="t-left">
-                                <span class="t-symbol">${item.ticker}</span>
-                                <span class="t-name">${item.n}${item.marca ? ` - <span class="t-brand-link" onclick="event.stopPropagation(); filterByBrand('${item.marca}')">${item.marca}</span>` : ''}</span>
-                            </div>
+                            <div class="t-left"><span class="t-symbol">${item.ticker}</span><span class="t-name">${item.n}</span></div>
                             <div class="t-right"><span class="t-price">$${format(stats.min)}</span><br><span class="t-change ${stats.trendClass}">${stats.icon} ${stats.spread}%</span></div>
                         </div>
-                        <div class="fav-btn ${isFav?'active':''}" onclick="toggleFav(${item.id}, this)"><i class="${isFav?'fa-solid':'fa-regular'} fa-star"></i></div>
+                        <div class="fav-btn ${favorites.includes(item.id)?'active':''}" onclick="toggleFav(${item.id}, this)"><i class="${favorites.includes(item.id)?'fa-solid':'fa-regular'} fa-star"></i></div>
                     </div>
-                    <div id="detail-${item.id}" class="order-book ${isOpen?'open':''}">
+                    <div id="detail-${item.id}" class="order-book ${openId == item.id ?'open':''}">
                         <div class="ob-header-row">
                             <div class="ob-tabs">
                                 <button class="ob-tab active" id="tab-m-${item.id}" onclick="switchObTab('${item.id}', 'market')">Market</button>
@@ -249,7 +245,10 @@
                             </div>
                         </div>
                         <div id="view-m-${item.id}" class="ob-market-view active">${renderMarket(item, stats.min)}</div>
-                        <div id="view-g-${item.id}" class="ob-graph-view"><div class="chart-wrapper" id="wrap-${item.id}"><canvas id="canvas-${item.id}"></canvas></div><span id="perf-${item.id}" class="chart-performance"></span></div>
+                        <div id="view-g-${item.id}" class="ob-graph-view">
+                            <span id="perf-${item.id}" class="chart-performance"></span>
+                            <div class="chart-wrapper" id="wrap-${item.id}"><canvas id="canvas-${item.id}"></canvas></div>
+                        </div>
                     </div>`;
                 container.appendChild(card);
             });
@@ -279,7 +278,6 @@
             const ctx = document.getElementById(`canvas-${id}`).getContext('2d');
             const isDark = document.documentElement.classList.contains('dark-mode');
             const color = isDark?'#fff':'#131722';
-            const tooltipBg = isDark ? 'rgba(80, 80, 80, 0.95)' : 'rgba(50, 50, 50, 0.95)';
             
             if(window['ch'+id]) window['ch'+id].destroy();
             window['ch'+id] = new Chart(ctx, {
@@ -294,7 +292,7 @@
                     plugins: { 
                         legend: { display: false },
                         tooltip: {
-                            backgroundColor: tooltipBg, padding: 8, cornerRadius: 4, displayColors: false,
+                            backgroundColor: 'rgba(50,50,50,0.95)', padding: 10, cornerRadius: 4, displayColors: false,
                             callbacks: {
                                 title: (c) => { const d = data[c[0].dataIndex].fecha.split('-'); return `${parseInt(d[2])} ${MONTHS[parseInt(d[1])-1]} ${d[0]}`; },
                                 label: (c) => `${data[c.dataIndex].supermercado}: $ ${format(data[c.dataIndex].precio_minimo)}`
@@ -317,12 +315,6 @@
                     }
                 }]
             });
-        }
-
-        function filterByBrand(brand) {
-            currentBrandFilter = brand;
-            closeAllDetails();
-            renderView();
         }
 
         function shareProd(id, name) {
@@ -365,21 +357,20 @@
             const m = document.getElementById(`view-m-${id}`), g = document.getElementById(`view-g-${id}`), rf = document.getElementById(`rf-${id}`), btnM = document.getElementById(`tab-m-${id}`), btnG = document.getElementById(`tab-g-${id}`);
             if(!m) return;
             if(type === 'market') { m.classList.add('active'); g.classList.remove('active'); rf.style.display = 'none'; btnM.classList.add('active'); btnG.classList.remove('active'); } 
-            else { m.classList.remove('active'); g.classList.add('active'); rf.style.display = 'flex'; btnM.classList.remove('active'); btnG.classList.add('active'); const n = flatList.find(p => p.id == id).n; setTimeout(() => updateChart(id, n, 7), 50); }
+            else { m.classList.remove('active'); g.classList.add('active'); rf.style.display = 'flex'; btnM.classList.remove('active'); btnG.classList.add('active'); const n = flatList.find(p => p.id == id).n; updateChart(id, n, 7); }
         }
 
         function renderMarket(item, min) {
             const S = [{name:"COTO",color:"#ff3b30",home:"https://www.cotodigital.com.ar"},{name:"CARREFOUR",color:"#2962ff",home:"https://www.carrefour.com.ar"},{name:"DIA",color:"#ff3b30",home:"https://diaonline.supermercadosdia.com.ar"},{name:"JUMBO",color:"#00c853",home:"https://www.jumbo.com.ar"}];
             return S.map((s, i) => { const p = item.p[i]; return `<div class="ob-row"><div class="ob-store"><div class="dot" style="background:${p>0?s.color:'#444'}"></div>${s.name}</div><a href="${p>0?(item.u[i]||s.home):'#'}" target="_blank" class="price-link ${p===min?'best-val':''} ${p===0?'no-price':''}">$${format(p)}</a></div>`; }).join('');
         }
-
         function setTrendFilter(t) { closeAllDetails(); currentTrendFilter = (currentTrendFilter === t) ? null : t; document.getElementById('btnUp').classList.toggle('active-up', currentTrendFilter === 'up'); document.getElementById('btnDown').classList.toggle('active-down', currentTrendFilter === 'down'); renderView(); }
         
         function setTab(t, btn) { 
             closeAllDetails(); 
             currentTab=t; 
             localStorage.setItem('last_tab', t);
-            currentBrandFilter = null; 
+            window.scrollTo(0, 0); // REQUERIDO: SCROLL ARRIBA
             document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); 
             if(btn) btn.classList.add('active'); 
             renderView(); 
@@ -387,15 +378,14 @@
 
         function updateThemeIcon() { document.getElementById('themeIcon').className = document.documentElement.classList.contains('dark-mode')?'fa-solid fa-sun':'fa-solid fa-moon'; }
         
-        function generateTicker(n, b) { 
+        function generateTicker(n) { 
+            // Algoritmo profesional para ticker único basado en el nombre
             const cleanN = n.toUpperCase().replace(/DE|EL|LA|CON|SIN|KG|GRS|ML|\W/g, "");
-            const cleanB = b ? b.toUpperCase().replace(/\W/g, "") : "";
-            if (cleanB.length >= 2) return cleanB.substring(0,2) + cleanN.substring(0,2);
             return cleanN.substring(0, 4);
         }
 
         function format(n) { return new Intl.NumberFormat('es-AR').format(n); }
-        document.getElementById('searchInput').addEventListener('input', () => { currentBrandFilter = null; renderView(); });
+        document.getElementById('searchInput').addEventListener('input', renderView);
         init();
     </script>
 </body>
