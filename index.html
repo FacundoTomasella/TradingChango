@@ -138,7 +138,7 @@
                 <a class="logo-link" onclick="goHome()"><div class="logo"><div class="logo-icon-wrapper"><i class="fa-solid fa-cart-shopping"></i><i class="fa-solid fa-arrow-trend-up"></i></div>TradingChango</div></a>
                 <div class="header-actions">
                     <!-- ICONO LEGAL ARRIBA REQUERIDO -->
-                    <button class="user-btn" onclick="toggleLegalDropdown()"><i class="fa-solid fa-circle-info"></i></button>
+                    <button class="user-btn" onclick="toggleLegalDropdown(event)"><i class="fa-solid fa-circle-info"></i></button>
                     <div id="legalDropdown" class="legal-dropdown">
                         <a onclick="openPage('acerca_de', 'Acerca de')">Acerca de</a>
                         <a onclick="openPage('terminos', 'Términos')">Términos</a>
@@ -267,11 +267,11 @@
             renderView();
         }
 
-            function toggleLegalDropdown() {
+            function toggleLegalDropdown(event) {
+            if (event) event.stopPropagation(); // Evita que el clic llegue al body inmediatamente
             const dropdown = document.getElementById('legalDropdown');
             dropdown.style.display = (dropdown.style.display === 'flex') ? 'none' : 'flex';
-        }
-
+         }
         function openPage(clave, titulo) {
             document.getElementById('legalDropdown').style.display = 'none';
             document.getElementById('tickerList').style.display = 'none';
@@ -447,6 +447,18 @@
         function format(n) { return new Intl.NumberFormat('es-AR').format(n); }
         function shareProd(id, n) { const u = `${window.location.origin}${window.location.pathname}?p=${id}`; if (navigator.share) navigator.share({ title: 'TradingChango', text: `Mirá el precio de ${n}`, url: u }); else { navigator.clipboard.writeText(u); alert("Vínculo copiado"); } }
         document.getElementById('searchInput').addEventListener('input', renderView);
+        // Cerrar el menú legal si se toca fuera de él
+        document.addEventListener('click', function(event) {
+        const dropdown = document.getElementById('legalDropdown');
+        const button = document.querySelector('.user-btn[onclick*="toggleLegalDropdown"]');
+        
+        if (dropdown.style.display === 'flex') {
+            // Si el clic NO fue dentro del menú ni en el botón que lo abre, lo cerramos
+            if (!dropdown.contains(event.target) && !button.contains(event.target)) {
+                dropdown.style.display = 'none';
+            }
+    }
+});
         init();
     </script>
 </body>
