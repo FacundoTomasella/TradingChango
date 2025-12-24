@@ -137,39 +137,22 @@
     
     /* AJUSTE PARA ESCRITORIO (Pantallas mayores a 1024px) */
 @media (min-width: 1024px) {
-    /* ... (mantén lo que ya pusimos antes para el ancho de 900px) ... */
-
-    /* OCULTAR el botón de info en escritorio */
-    #mobileInfoBtn {
-        display: none !important;
+    .app-container, .pv-container, .bottom-nav {
+        max-width: 900px !important; /* Aumentamos el ancho en escritorio */
     }
 
-    /* MOSTRAR y dar estilo al menú horizontal en escritorio */
-    .desktop-menu {
-        display: flex !important;
-        gap: 20px;
-        margin-right: 15px;
+    /* Optimizamos el espacio de las tarjetas en escritorio */
+    .ticker-info {
+        padding-right: 30px; 
     }
 
-    .desktop-menu a {
-        font-size: 12px;
-        font-weight: 700;
-        color: var(--text-main);
-        text-decoration: none;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: 0.2s;
-    }
-
-    .desktop-menu a:hover {
-        color: var(--text-muted);
+    /* Hacemos que la imagen del producto en la vista detalle sea un poco más grande */
+    .pv-img-container {
+        width: 180px;
+        height: 180px;
     }
 }
-
-/* Regla para ocultar el menú de escritorio cuando estamos en MÓVIL */
-.desktop-menu {
-    display: none;
-}    
+    
     </style>
 </head>
 <body>
