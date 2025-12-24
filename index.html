@@ -310,6 +310,14 @@
             renderView();
         }
 
+function clearInput() {
+    const input = document.getElementById('searchInput');
+    input.value = ''; // Borra el texto
+    input.focus();    // Devuelve el foco al input para que el usuario pueda escribir de nuevo
+    renderView();     // Refresca la lista para mostrar todos los productos otra vez
+}
+
+        
         function openProductView(id, pushState = true) {
             const item = flatList.find(i => i.id == id);
             if (!item) return;
