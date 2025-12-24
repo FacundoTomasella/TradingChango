@@ -317,12 +317,19 @@
 
     let flatList = [], favorites = JSON.parse(localStorage.getItem('fav_tickers')) || [], currentTab = 'home', currentTrendFilter = null, openId = null, configDB = {}, currentChart = null;
 
-    // Función auxiliar para generar URLs limpias (Slugs)
+    // Diccionario de páginas estáticas para reconocerlas en la URL
+    const paginasEstaticas = {
+        'acerca_de': 'Acerca de',
+        'terminos': 'Términos',
+        'contacto': 'Contacto'
+    };
+
+    // Función para generar URLs limpias
     const getSlug = (name) => name.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
 
     async function init() {
         try {
-            // 1. Cargar Configuración
+            // 1. Cargar Configuración (Legales, etc)
             const resC = await fetch(`${SUPABASE_URL}/rest/v1/configuracion?select=*`, { headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` } });
             const configRows = await resC.json();
             configRows.forEach(row => configDB[row.clave] = row.valor);
@@ -331,7 +338,7 @@
             const res = await fetch(`${SUPABASE_URL}/rest/v1/productos?select=*`, { headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` } });
             const rows = await res.json();
             
-            // 3. Cargar Historial (últimos 7 días para tendencia en lista)
+            // 3. Cargar Historial (últimos 7 días)
             const d7 = new Date(); d7.setDate(d7.getDate() - 7);
             const resH = await fetch(`${SUPABASE_URL}/rest/v1/historial_precios?fecha=gte.${d7.toISOString().split('T')[0]}`, { headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` } });
             const hData = await resH.json();
@@ -353,33 +360,43 @@
             document.getElementById('loader').style.display = 'none';
             updateCartBadge();
 
-            // LÓGICA DE RUTAS LIMPIAS AL INICIAR (/categoria/nombre-producto)
+            // --- LÓGICA DE RUTAS AL CARGAR ---
             const path = window.location.pathname.split('/').filter(p => p !== "");
-            
-            if (path.length >= 2) {
-                const slugFromUrl = path[1];
-                const itemEncontrado = flatList.find(i => getSlug(i.n) === slugFromUrl);
+
+            if (paginasEstaticas[path[0]]) {
+                openPage(path[0], paginasEstaticas[path[0]], false);
+            } 
+            else if (path.length >= 2) {
+                const itemEncontrado = flatList.find(i => getSlug(i.n) === path[1]);
                 if (itemEncontrado) openProductView(itemEncontrado.id, false);
                 else goHome();
-            } else if (path.length === 1 && path[0] !== 'index.html') {
+            } 
+            else if (path.length === 1 && path[0] !== 'index.html') {
                 setTab(path[0], null, false);
-            } else {
+            } 
+            else {
                 goHome();
             }
 
-            // MANEJO BOTÓN ATRÁS DEL NAVEGADOR
+            // --- MANEJO DEL BOTÓN ATRÁS ---
             window.onpopstate = (e) => {
                 const p = window.location.pathname.split('/').filter(x => x !== "");
-                if (p.length >= 2) {
+                if (paginasEstaticas[p[0]]) {
+                    openPage(p[0], paginasEstaticas[p[0]], false);
+                } 
+                else if (p.length >= 2) {
                     const itemPop = flatList.find(i => getSlug(i.n) === p[1]);
                     if (itemPop) openProductView(itemPop.id, false);
-                } else {
-                    closeProductView(false);
+                } 
+                else {
+                    document.getElementById('pageView').classList.remove('active');
+                    document.getElementById('productFullView').style.display = 'none';
+                    document.body.style.overflow = 'auto';
                     setTab(p[0] || 'home', null, false);
                 }
             };
 
-        } catch (e) { console.error("Error en Init:", e); }
+        } catch (e) { console.error(e); }
     }
 
     function goHome() {
@@ -429,7 +446,7 @@
         const stats = getStats(item.p, item.h7d);
         document.getElementById('pv-name').innerText = item.n;
         
-        // Imagen
+        // Manejo de Imagen
         const imgWrap = document.getElementById('pv-img-wrap');
         const imgEl = document.getElementById('pv-img');
         if (item.img) { imgEl.src = item.img; imgWrap.style.display = 'block'; }
@@ -439,7 +456,6 @@
         document.getElementById('pv-best-store').innerText = `Mejor precio hoy en ${stores[item.p.indexOf(stats.min)]}`;
         document.getElementById('pv-price-big').innerText = `$ ${format(stats.min)}`;
         
-        // Favoritos
         const favBtn = document.getElementById('pv-fav-btn');
         favBtn.style.color = favorites.includes(item.id) ? 'var(--star-gold)' : 'var(--text-main)';
         favBtn.onclick = () => { toggleFav(item.id, null); openProductView(item.id, false); };
@@ -453,7 +469,6 @@
         
         loadPvChart(7);
 
-        // Compartir
         document.getElementById('pv-share-btn').onclick = async () => {
             const shareData = { title: 'TradingChango', text: `Mirá el precio de ${item.n}`, url: window.location.href };
             try {
@@ -472,6 +487,18 @@
         if (pushState) history.pushState(null, '', `/${currentTab === 'home' ? '' : currentTab}`);
         openId = null;
         renderView();
+    }
+
+    function openPage(c, t, pushState = true) {
+        if (pushState) history.pushState({page: c}, '', `/${c}`);
+        document.getElementById('tickerList').style.display = 'none';
+        document.getElementById('searchBarSection').style.display = 'none';
+        document.getElementById('heroSection').style.display = 'none';
+        const v = document.getElementById('pageView');
+        v.classList.add('active');
+        document.getElementById('pageTitle').innerText = t;
+        document.getElementById('pageContent').innerHTML = configDB[c] || 'Cargando...';
+        window.scrollTo(0,0);
     }
 
     async function loadPvChart(days, btn) {
@@ -607,12 +634,12 @@
     function updateThemeIcon() { document.getElementById('themeIcon').className = document.documentElement.classList.contains('dark-mode')?'fa-solid fa-sun':'fa-solid fa-moon'; }
     function generateTicker(n) { return n.toUpperCase().replace(/DE|EL|LA|CON|SIN|KG|GRS|ML|\W/g, "").substring(0, 4); }
     function format(n) { return new Intl.NumberFormat('es-AR').format(n); }
-    function openPage(c, t) { document.getElementById('tickerList').style.display = 'none'; document.getElementById('searchBarSection').style.display = 'none'; document.getElementById('heroSection').style.display = 'none'; const v = document.getElementById('pageView'); v.classList.add('active'); document.getElementById('pageTitle').innerText = t; document.getElementById('pageContent').innerHTML = configDB[c] || '...'; }
     function toggleLegalDropdown(e) { e.stopPropagation(); const d = document.getElementById('legalDropdown'); d.style.display = d.style.display === 'flex' ? 'none' : 'flex'; }
     
     document.getElementById('searchInput').addEventListener('input', renderView);
     document.addEventListener('click', () => document.getElementById('legalDropdown').style.display = 'none');
     
+    // Iniciar la app
     init();
 </script>
 </body>
