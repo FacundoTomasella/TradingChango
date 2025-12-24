@@ -43,8 +43,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-app); color: var(--text-main); font-family: '-apple-system', 'BlinkMacSystemFont', 'Inter', sans-serif; padding-bottom: 80px; transition: background 0.3s, color 0.3s; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; width: 100%; }
         
-        /* Contenedor principal adaptable */
-        .app-container { width: 100%; max-width: 600px; min-height: 100vh; background: var(--bg-app); border-left: 1px solid var(--border); border-right: 1px solid var(--border); position: relative; }
+        .app-container { width: 100%; max-width: 600px; min-height: 100vh; background: var(--bg-app); position: relative; }
         
         header { position: sticky; top: 0; z-index: 100; background: var(--bg-app); border-bottom: 1px solid var(--border); padding: 15px 20px; }
         .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
@@ -74,8 +73,8 @@
         .hero-subtitle { font-size: 13px; color: var(--text-muted); font-weight: 500; }
 
         /* PRODUCT VIEW */
-        #productFullView { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 500; overflow-y: auto; backdrop-filter: blur(4px); }
-        .pv-container { width: 100%; max-width: 600px; margin: 0 auto; min-height: 100vh; background: var(--bg-app); border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
+        #productFullView { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 500; overflow-y: auto; backdrop-filter: blur(8px); }
+        .pv-container { width: 100%; max-width: 600px; margin: 0 auto; min-height: 100vh; background: var(--bg-app); }
         .pv-header { position: sticky; top: 0; background: var(--bg-app); padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 10; }
         .pv-content { padding: 25px 20px; }
         
@@ -105,7 +104,7 @@
         .best-val { color: var(--color-good); font-weight: 700; background: rgba(0, 230, 118, 0.1); } 
 
         .ticker-list { padding: 0; }
-        .ticker-card { border-bottom: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; position: relative; background: var(--bg-app); transition: background 0.2s; }
+        .ticker-card { border-bottom: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; position: relative; background: var(--bg-app); transition: background 0.2s; }
         .ticker-info { flex-grow: 1; display: flex; align-items: center; justify-content: space-between; padding-right: 15px; }
         .t-left { display: flex; flex-direction: column; gap: 3px; }
         .t-symbol { font-family: 'Roboto Mono', monospace; font-weight: 700; font-size: 16px; letter-spacing: -0.5px; }
@@ -148,12 +147,11 @@
         @media (min-width: 1024px) {
             .app-container { max-width: 1200px !important; border: none; }
             
-            /* Encabezado centrado */
             header .top-row, #searchBarSection { max-width: 900px; margin-left: auto; margin-right: auto; }
             #searchInput { height: 50px; font-size: 16px; border-radius: 25px; padding-left: 55px; }
             .search-icon { left: 24px; font-size: 18px; }
 
-            /* Grilla de productos */
+            /* Grilla de productos limpia */
             .ticker-list {
                 display: grid;
                 grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -161,33 +159,52 @@
                 padding: 30px !important;
             }
             .ticker-card {
-                border: 1px solid var(--border);
                 border-radius: 16px;
                 padding: 20px;
                 background: var(--bg-card);
-                transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+                transition: transform 0.2s, box-shadow 0.2s;
+                border: none;
             }
             .ticker-card:hover {
                 transform: translateY(-4px);
                 box-shadow: 0 12px 24px rgba(0,0,0,0.06);
-                border-color: var(--text-main);
                 background: var(--bg-app);
             }
-            .ticker-card::after { display: none; } /* Quitar línea de separación */
 
-            /* Vista de Producto Pro (Dos columnas) */
+            /* Resumen de Chango para Escritorio - Más Grande */
+            .chango-summary {
+                grid-column: 1 / -1;
+                max-width: 900px;
+                margin: 20px auto 40px auto;
+                padding: 40px;
+                border-radius: 24px;
+            }
+            .chango-summary .pv-market-title {
+                font-size: 18px;
+                margin-bottom: 30px;
+                text-align: center;
+            }
+            .chango-row {
+                font-size: 22px;
+                padding: 15px 0;
+                border-bottom: 1px solid var(--border);
+            }
+            .chango-row:last-child { border-bottom: none; }
+
+            /* Vista de Producto Pro - Ventana más compacta pero completa */
             .pv-container {
-                max-width: 1000px !important;
-                margin: 60px auto;
+                max-width: 850px !important; /* Más chica para que entre todo */
+                margin: 40px auto;
                 min-height: auto;
                 border-radius: 24px;
-                box-shadow: 0 30px 60px rgba(0,0,0,0.3);
-                overflow: hidden;
+                box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+                max-height: 90vh; /* Para que no exceda la pantalla */
+                overflow-y: auto;
             }
             .pv-content {
                 display: grid;
-                grid-template-columns: 350px 1fr;
-                gap: 40px;
+                grid-template-columns: 300px 1fr;
+                gap: 30px;
                 padding: 40px;
                 align-items: start;
             }
@@ -195,12 +212,12 @@
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
-                border-bottom: 1px solid var(--border);
-                padding-bottom: 25px;
-                margin-bottom: 0;
+                padding-bottom: 0;
+                border-bottom: none;
             }
-            .pv-img-container { width: 220px; height: 220px; margin-bottom: 20px; }
-            .pv-title-box h1 { font-size: 28px; }
+            .pv-img-container { width: 200px; height: 200px; margin-bottom: 20px; display: block; }
+            .pv-title-box h1 { font-size: 26px; }
+            .pv-price-big { font-size: 38px; margin: 15px 0; }
 
             .pv-chart-section {
                 grid-column: 2;
@@ -209,16 +226,14 @@
                 border-top: none;
                 padding-top: 0;
             }
-            .chart-wrapper { height: 400px; }
+            .chart-wrapper { height: 380px; }
 
             .pv-market-section {
                 grid-column: 1;
-                margin-top: 25px;
-                border-top: none;
-                padding-top: 0;
+                margin-top: 30px;
+                padding-top: 25px;
             }
 
-            /* Navegación flotante */
             .bottom-nav {
                 max-width: 500px !important;
                 left: 50%;
@@ -229,15 +244,8 @@
                 box-shadow: 0 10px 30px rgba(0,0,0,0.15);
                 padding: 15px 10px;
             }
-
             .desktop-links { display: flex; }
             #info-celular { display: none; }
-            
-            .chango-summary {
-                grid-column: 1 / -1;
-                max-width: 900px;
-                margin: 20px auto;
-            }
         }
     </style>
 </head>
@@ -265,17 +273,15 @@
                         <h1 id="pv-name">Cargando...</h1>
                         <div class="pv-best-store" id="pv-best-store">---</div>
                         <div class="pv-price-big" id="pv-price-big">$ 0</div>
-                        <div class="pv-avg-price">Precio promedio: <span id="pv-avg-price">$ 0</span></div>
+                        <div class="pv-avg-price">Promedio: <span id="pv-avg-price">$ 0</span></div>
                     </div>
                 </div>
 
                 <div class="pv-chart-section">
                     <div class="range-filters" id="pv-range-filters">
                         <button class="range-btn active" onclick="loadPvChart(7, this)">7D</button>
-                        <button class="range-btn" onclick="loadPvChart(15, this)">15D</button>
                         <button class="range-btn" onclick="loadPvChart(30, this)">1M</button>
                         <button class="range-btn" onclick="loadPvChart(90, this)">3M</button>
-                        <button class="range-btn" onclick="loadPvChart(180, this)">6M</button>
                         <button class="range-btn" onclick="loadPvChart(365, this)">1Y</button>
                     </div>
                     <span id="pv-perf" class="chart-performance"></span>
@@ -283,7 +289,7 @@
                 </div>
 
                 <div class="pv-market-section">
-                    <div class="pv-market-title">Comparación de mercado</div>
+                    <div class="pv-market-title">Precios por cadena</div>
                     <div id="pv-market-list"></div>
                 </div>
             </div>
@@ -417,7 +423,7 @@
                 const p = window.location.pathname.split('/').filter(x => x !== "");
                 if (paginasEstaticas[p[0]]) { openPage(p[0], paginasEstaticas[p[0]], false); } 
                 else if (p.length >= 2) {
-                    const itemPop = flatList.find(i => getSlug(i.n) === p[1]);
+                    const itemPop = flatList.find(i => p.includes(getSlug(i.n)));
                     if (itemPop) openProductView(itemPop.id, false);
                 } 
                 else {
@@ -602,7 +608,7 @@
                 const minTotal = Math.min(...totals.filter(t => t > 0));
                 const summaryDiv = document.createElement('div');
                 summaryDiv.className = 'chango-summary';
-                let html = `<div class="pv-market-title">Tu Chango</div>`;
+                let html = `<div class="pv-market-title">Tu Chango (Resumen total)</div>`;
                 ["Coto", "Carrefour", "Dia", "Jumbo"].forEach((n, i) => {
                     html += `<div class="chango-row ${totals[i] === minTotal && minTotal > 0 ? 'best' : ''}"><span>${n}</span><span>$ ${format(totals[i])}</span></div>`;
                 });
