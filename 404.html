@@ -423,18 +423,25 @@
             const hData = await resH.json();
             
             const usedTickers = new Set();
-            flatList = rows.map(r => {
-                const h7 = hData.filter(h => h.nombre_producto === r.nombre).sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
-                let t = generateTicker(r.nombre);
-                if(usedTickers.has(t)) t = (t.substring(0,3) + r.id.toString().slice(-1)).toUpperCase();
-                usedTickers.add(t);
-                return {
-                    id: r.id, n: r.nombre.trim(), cat: r.categoria, ticker: t,
-                    p: [r.p_coto||0, r.p_carrefour||0, r.p_dia||0, r.p_jumbo||0],
-                    h7d: h7.length > 0 ? h7[0].precio_minimo : 0,
-                    img: r.imagen_url
-                }
-            });
+           // Dentro de la función async function init()
+flatList = rows.map(r => {
+    const h7 = hData.filter(h => h.nombre_producto === r.nombre).sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
+    let t = generateTicker(r.nombre);
+    if(usedTickers.has(t)) t = (t.substring(0,3) + r.id.toString().slice(-1)).toUpperCase();
+    usedTickers.add(t);
+    
+    return {
+        id: r.id, 
+        n: r.nombre.trim(), 
+        cat: r.categoria, 
+        ticker: t,
+        p: [r.p_coto||0, r.p_carrefour||0, r.p_dia||0, r.p_jumbo||0],
+        // AGREGAMOS ESTA LÍNEA (Asegúrate que los nombres url_coto, etc., coincidan con Supabase)
+        urls: [r.url_coto || '#', r.url_carrefour || '#', r.url_dia || '#', r.url_jumbo || '#'],
+        h7d: h7.length > 0 ? h7[0].precio_minimo : 0,
+        img: r.imagen_url
+    }
+});
 
             document.getElementById('loader').style.display = 'none';
             updateCartBadge();
@@ -860,12 +867,42 @@ function renderEmptyCart(container) {
     }
 
     function renderMarket(item, min) {
-        const STORES = [{name:"COTO",color:"#ff3b30"},{name:"CARREFOUR",color:"#2962ff"},{name:"DIA",color:"#ff3b30"},{name:"JUMBO",color:"#00c853"}];
-        return STORES.map((s, i) => { 
-            const p = item.p[i]; return `<div class="ob-row"><div class="ob-store"><div class="dot" style="background:${p>0?s.color:'#444'}"></div>${s.name}</div><span class="price-link ${p===min?'best-val':''} ${p===0?'no-price':''}">$${format(p)}</span></div>`; 
-        }).join('');
-    }
+    const STORES = [
+        {name: "COTO", color: "#ff3b30"},
+        {name: "CARREFOUR", color: "#2962ff"},
+        {name: "DIA", color: "#ff3b30"},
+        {name: "JUMBO", color: "#00c853"}
+    ];
 
+    return STORES.map((s, i) => { 
+        const p = item.p[i];
+        const url = item.urls ? item.urls[i] : '#'; // Obtenemos la URL guardada
+        
+        // Si no hay precio, mostramos un estado desactivado
+        if (p === 0) {
+            return `
+                <div class="ob-row" style="opacity: 0.5;">
+                    <div class="ob-store">
+                        <div class="dot" style="background:#444"></div>
+                        ${s.name}
+                    </div>
+                    <span class="price-link no-price">N/A</span>
+                </div>`;
+        }
+
+        // Si hay precio, creamos el link real
+        return `
+            <div class="ob-row">
+                <div class="ob-store">
+                    <div class="dot" style="background:${s.color}"></div>
+                    ${s.name}
+                </div>
+                <a href="${url}" target="_blank" rel="noopener noreferrer" class="price-link ${p === min ? 'best-val' : ''}">
+                    $${format(p)}
+                </a>
+            </div>`; 
+    }).join('');
+}
     function setTrendFilter(t) { currentTrendFilter = (currentTrendFilter === t) ? null : t; document.getElementById('btnUp').classList.toggle('active-up', currentTrendFilter === 'up'); document.getElementById('btnDown').classList.toggle('active-down', currentTrendFilter === 'down'); renderView(); }
     function toggleTheme() { document.documentElement.classList.toggle('dark-mode'); localStorage.setItem('theme', document.documentElement.classList.contains('dark-mode')?'dark':'light'); updateThemeIcon(); if(openId) loadPvChart(7); }
     function updateThemeIcon() { document.getElementById('themeIcon').className = document.documentElement.classList.contains('dark-mode')?'fa-solid fa-sun':'fa-solid fa-moon'; }
