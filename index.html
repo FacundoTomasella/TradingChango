@@ -966,7 +966,28 @@ function renderEmptyCart(container) {
     
     document.getElementById('searchInput').addEventListener('input', renderView);
     document.addEventListener('click', () => document.getElementById('legalDropdown').style.display = 'none');
-    
+
+      let deferredPrompt;
+      
+      window.addEventListener('beforeinstallprompt', (e) => {
+        // Evita que Chrome muestre el mini-infobar automático
+        e.preventDefault();
+        deferredPrompt = e;
+        
+        // Aquí podrías mostrar un botón propio que diga "Descargar App"
+        console.log("La app es lista para ser instalada");
+      });
+      
+      // Ejemplo: Si tenés un botón con id="btnInstalar"
+      // document.getElementById('btnInstalar').addEventListener('click', async () => {
+      //   if (deferredPrompt) {
+      //     deferredPrompt.prompt();
+      //     const { outcome } = await deferredPrompt.userChoice;
+      //     deferredPrompt = null;
+      //   }
+      // });
+
+     
     // Iniciar la app
     init();
 </script>
