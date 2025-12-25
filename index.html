@@ -301,14 +301,19 @@
     </style>
 </head>
 <body>
-  <div id="pwaInstallBanner" style="display: none; background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 12px 20px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 999;">
-    <div style="display: flex; align-items: center; gap: 10px;">
-        <div style="font-size: 20px;">🛒</div>
-        <div>
-            <div style="font-size: 13px; font-weight: 800;">Instalar TradingChango</div>
-            <div style="font-size: 11px; color: var(--text-muted);">Acceso rápido y mejor experiencia</div>
-        </div>
-    </div>
+  <div id="pwaPill" style="display: none; position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; padding: 10px 16px; border-radius: 50px; font-size: 12px; font-weight: 700; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); align-items: center; gap: 12px; width: max-content; animation: slideUp 0.4s ease-out;">
+    <span onclick="closePwaPill()" style="opacity: 0.7; font-size: 16px; cursor: pointer;">&times;</span>
+    <span id="pwaText" onclick="installPwa()">INSTALAR APP 🛒</span>
+</div>
+
+<style>
+    @keyframes slideUp {
+        from { bottom: -50px; opacity: 0; }
+        to { bottom: 85px; opacity: 1; }
+    }
+    /* Si ya está instalada, no se muestra nunca */
+    @media (display-mode: standalone) { #pwaPill { display: none !important; } }
+</style>
     <button id="installBtn" style="background: var(--accent); color: #fff; border: none; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">INSTALAR</button>
 </div>
     <div id="productFullView">
@@ -983,42 +988,41 @@ function renderEmptyCart(container) {
     document.addEventListener('click', () => document.getElementById('legalDropdown').style.display = 'none');
 
         let deferredPrompt;
-const installBanner = document.getElementById('pwaInstallBanner');
-const installBtn = document.getElementById('installBtn');
+const pwaPill = document.getElementById('pwaPill');
 
-// 1. Escuchar el evento de instalación de Chrome/Android
 window.addEventListener('beforeinstallprompt', (e) => {
-    // Evita que aparezca la barrita gris por defecto de Chrome
     e.preventDefault();
-    // Guarda el evento para usarlo después
     deferredPrompt = e;
-    // Muestra nuestro banner personalizado (solo si no está instalada)
-    if (window.innerWidth < 1024) { // Opcional: solo mostrar en móviles
-        installBanner.style.display = 'flex';
+    
+    // Solo mostrar si es móvil y si no la cerró antes en esta sesión
+    const wasClosed = sessionStorage.getItem('pwaPillClosed');
+    if (window.innerWidth < 1024 && !wasClosed) {
+        pwaPill.style.display = 'flex';
     }
 });
 
-// 2. Lógica del botón de instalar
-installBtn.addEventListener('click', async () => {
+async function installPwa() {
     if (deferredPrompt) {
-        // Muestra el cartel nativo de "Quieres instalar esta app?"
         deferredPrompt.prompt();
-        
         const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-            console.log('El usuario aceptó la instalación');
-            installBanner.style.display = 'none';
-        }
+        if (outcome === 'accepted') pwaPill.style.display = 'none';
         deferredPrompt = null;
     }
-});
+}
 
-// 3. Esconder el banner si el usuario ya la tiene instalada o la instaló recién
-window.addEventListener('appinstalled', () => {
-    installBanner.style.display = 'none';
-    deferredPrompt = null;
-    console.log('TradingChango instalada correctamente');
-});
+function closePwaPill() {
+    pwaPill.style.display = 'none';
+    // Guardamos en la sesión que el usuario la cerró para no molestar más
+    sessionStorage.setItem('pwaPillClosed', 'true');
+}
+
+// Lógica para iPhone (opcional, muestra un texto diferente)
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+if (isIOS && !isStandalone && !sessionStorage.getItem('pwaPillClosed')) {
+    pwaPill.style.display = 'flex';
+    document.getElementById('pwaText').innerText = 'Agregá la App a tu inicio ↑';
+}
      
     // Iniciar la app
     init();
