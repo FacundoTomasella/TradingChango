@@ -127,8 +127,39 @@
         .pv-best-store { font-size: 13px; color: var(--text-muted); margin-top: 8px; font-weight: 600; text-transform: uppercase; }
         .pv-price-big { font-family: 'Roboto Mono'; font-size: 32px; font-weight: 600; margin-top: 5px; color: var(--text-main); }
         /* NUEVO: Estilo para precio promedio */
-        .pv-avg-price { font-size: 14px; color: var(--text-muted); font-weight: 500; margin-top: 4px; }
-        .pv-avg-price span { color: var(--text-main); font-weight: 700; font-family: 'Roboto Mono'; }
+        /* Estilo del contenedor de Precio Promedio */
+.pv-avg-price {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-top: 12px;
+    
+    /* Fondo gris y bordes */
+    background: #f1f3f6; 
+    padding: 8px 12px;
+    border-radius: 8px;
+    
+    /* Para que no ocupe todo el ancho, solo lo necesario */
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid rgba(0,0,0,0.03);
+}
+
+/* Ajuste para Modo Oscuro */
+.dark-mode .pv-avg-price {
+    background: #1e222d; /* Gris oscuro tipo TradingView */
+    color: #b2b5be;
+    border-color: #2a2e39;
+}
+
+/* El número adentro del promedio */
+.pv-avg-price span {
+    color: var(--text-main);
+    font-weight: 700;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 13px;
+}
         
         .pv-chart-section { margin-top: 25px; border-top: 1px solid var(--border); padding-top: 20px; }
         .range-filters { display: flex; gap: 4px; justify-content: flex-end; margin-bottom: 10px; }
