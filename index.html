@@ -578,21 +578,9 @@ flatList = rows.map(r => {
         const promedio = preciosDisponibles.length > 0 ? (preciosDisponibles.reduce((a, b) => a + b, 0) / preciosDisponibles.length) : 0;
         document.getElementById('pv-avg-price').innerText = `$ ${format(Math.round(promedio))}`;
 
-       // Dentro de openProductView...
-favBtn.onclick = () => { 
-    toggleFav(item.id, null); // Ejecuta la lógica base
-
-    // Solo actualizamos el color del ícono en el modal manualmente
-    const isFav = favorites.includes(item.id);
-    favBtn.style.color = isFav ? 'var(--star-gold)' : 'var(--text-main)';
-
-    // IMPORTANTE: Si estamos en la pestaña 'favs', ejecutamos renderView 
-    // para que la lista de atrás se actualice, pero NO llamamos a openProductView
-    // para que el gráfico actual no se reinicie.
-    if (currentTab === 'favs') {
-        renderView(); 
-    }
-};
+        const favBtn = document.getElementById('pv-fav-btn');
+        favBtn.style.color = favorites.includes(item.id) ? 'var(--star-gold)' : 'var(--text-main)';
+        favBtn.onclick = () => { toggleFav(item.id, null); openProductView(item.id, false); };
         
         document.getElementById('pv-market-list').innerHTML = renderMarket(item, stats.min);
         document.getElementById('productFullView').style.display = 'block';
@@ -760,23 +748,11 @@ favBtn.onclick = () => {
     });
 }
     function toggleFav(id, btn) { 
-    if(favorites.includes(id)) {
-        favorites = favorites.filter(f => f !== id);
-    } else {
-        favorites.push(id);
+        if(favorites.includes(id)) favorites = favorites.filter(f=>f!==id); else favorites.push(id); 
+        localStorage.setItem('fav_tickers', JSON.stringify(favorites)); 
+        updateCartBadge();
+        if(currentTab === 'favs') renderView(); else if(btn) btn.classList.toggle('active'); 
     }
-    localStorage.setItem('fav_tickers', JSON.stringify(favorites)); 
-    updateCartBadge();
-
-    // Comportamiento normal para la lista de productos (cuando 'btn' existe)
-    if(currentTab === 'favs' && !openId) {
-        // Solo renderizamos aquí si NO hay un producto abierto
-        renderView(); 
-    } else if(btn) {
-        // Esto es para las tarjetitas de la lista principal
-        btn.classList.toggle('active'); 
-    }
-}
 
     function updateCartBadge() {
         const b = document.getElementById('cartBadge');
