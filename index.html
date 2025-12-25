@@ -237,57 +237,37 @@
         .legal-dropdown { position: absolute; top: 50px; right: 20px; background: var(--bg-app); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: none; flex-direction: column; z-index: 200; width: 180px; }
         .legal-dropdown a { padding: 12px 15px; font-size: 12px; font-weight: 700; color: var(--text-main); text-decoration: none; border-bottom: 1px solid var(--border); text-transform: uppercase; cursor: pointer; }
     
+  /* MODO ESCRITORIO (PC) */
     @media (min-width: 1024px) {
-    /* 1. Convertimos el fondo en un overlay oscuro y traslúcido */
-    #productFullView {
-        background-color: rgba(0, 0, 0, 0.5) !important;
-        backdrop-filter: blur(8px); /* Efecto desenfoque al fondo */
-        display: none; /* El JS lo cambia a block, pero usaremos flex para centrarlo */
-        align-items: center;
-        justify-content: center;
-    }
+        .app-container { max-width: 900px; }
+        .desktop-links { display: flex; }
+        #info-celular { display: none; }
 
-    /* 2. Convertimos el contenedor en una ventana flotante */
-    #productFullView .pv-container {
-        max-width: 650px !important; /* Más ancho que en celular pero controlado */
-        height: auto !important;
-        max-height: 90vh; /* Que no llegue a los bordes de la pantalla */
-        border-radius: 24px;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-        overflow-y: auto;
-        border: 1px solid var(--border);
-        position: relative;
+        /* Modal Compacto y Flotante */
+        #productFullView {
+            background-color: rgba(0, 0, 0, 0.5) !important;
+            backdrop-filter: blur(8px);
+            display: none; /* JS debe cambiarlo a 'flex' para centrar */
+            align-items: center;
+            justify-content: center;
+        }
+        #productFullView .pv-container {
+            max-width: 650px !important;
+            height: auto !important;
+            max-height: 90vh;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            min-height: auto;
+        }
+        .pv-content { padding: 20px !important; }
+        .pv-top-info { gap: 15px !important; margin-bottom: 5px !important; }
+        .pv-img-container { width: 130px !important; height: 130px !important; }
+        .pv-title-box h1 { font-size: 22px !important; }
+        .chart-wrapper { height: 220px !important; }
+        .pv-chart-section { margin-top: 15px !important; padding-top: 15px !important; }
     }
-
-    /* 3. Compactamos el contenido para que entre todo */
-    .pv-content {
-        padding: 20px !important; /* Reducimos el aire */
-    }
-
-    .pv-top-info {
-        gap: 15px !important;
-        margin-bottom: 5px !important;
-    }
-
-    .pv-img-container {
-        width: 130px !important; /* Imagen un poco más chica en escritorio para ahorrar espacio */
-        height: 130px !important;
-    }
-
-    .pv-title-box h1 {
-        font-size: 22px !important;
-    }
-
-    /* 4. Achicamos un poco el gráfico para que no obligue a scrollear */
-    .chart-wrapper {
-        height: 220px !important;
-    }
-
-    .pv-chart-section {
-        margin-top: 15px !important;
-        padding-top: 15px !important;
-    }
-}
 
 /* Ahora le decimos que si la pantalla es grande (PC), haga el cambio */
 @media (min-width: 1024px) {
