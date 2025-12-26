@@ -377,7 +377,36 @@
 .pv-alert-btn.active {
     color: #3182ce; /* Un azul para las alertas */
 }
+#authModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-app);
+    z-index: 2000;
+    padding: 40px 20px;
+}
 
+/* En escritorio lo hacemos flotante */
+@media (min-width: 1024px) {
+    #authModal {
+        background: rgba(0,0,0,0.6);
+        backdrop-filter: blur(8px);
+        display: none; /* Se cambia a flex con JS */
+        align-items: center;
+        justify-content: center;
+    }
+    #authModal > div {
+        background: var(--bg-app);
+        padding: 40px;
+        border-radius: 24px;
+        width: 100%;
+        max-width: 450px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+}
       
     </style>
 </head>
@@ -459,10 +488,7 @@
 
     <div class="app-container">
         <header>
-          <!-- En tu header -->
-<button class="user-btn" onclick="openAuth()">
-    <i class="fa-solid fa-user"></i>
-</button>
+          <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
             <div class="top-row">
                 <a class="logo-link" onclick="setTab('home')"><div class="logo"><div class="logo-icon-wrapper"><i class="fa-solid fa-cart-shopping"></i><i class="fa-solid fa-arrow-trend-up"></i></div>TradingChango</div></a>
                 <div class="header-actions">
@@ -473,6 +499,11 @@
         <a onclick="openPage('contacto', 'Contacto')">Contacto</a>
     </div>
 
+  <!-- Botón de Usuario (AHORA AQUÍ) -->
+        <button class="user-btn" id="userBtn" onclick="openAuth()">
+            <i class="fa-solid fa-circle-user"></i>
+        </button>
+                  
     <!-- Este es el botón de información para celular (ahora con ID) -->
     <button class="user-btn" id="info-celular" onclick="toggleLegalDropdown(event)">
         <i class="fa-solid fa-circle-info"></i>
