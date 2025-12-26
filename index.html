@@ -399,21 +399,24 @@
     <div id="productFullView">
         <div class="pv-container">
             <div class="pv-header">
-                <div style="display:flex; align-items:center; gap:12px;">
-                    <button class="pv-back-btn" onclick="closeProductView()"><i class="fa-solid fa-arrow-left"></i></button>
-                    <div class="logo" style="font-size:16px;">TradingChango</div>
-                </div>
-                <div class="header-actions">
-                    <button class="pv-fav-btn" id="pv-fav-btn"><i class="fa-solid fa-cart-shopping"></i></button>
-                    <button class="pv-share-btn" id="pv-share-btn"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
-                </div>
-            </div>
-            <div class="header-actions">
-            <button class="pv-alert-btn" id="pv-alert-btn" onclick="toggleAlertUI()"><i class="fa-regular fa-bell"></i></button>
-            <button class="pv-fav-btn" id="pv-fav-btn"><i class="fa-solid fa-cart-shopping"></i></button>
-            <button class="pv-share-btn" id="pv-share-btn"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
-        </div>
-            <div class="pv-content">
+    <div style="display:flex; align-items:center; gap:12px;">
+        <button class="pv-back-btn" onclick="closeProductView()"><i class="fa-solid fa-arrow-left"></i></button>
+        <div class="logo" style="font-size:16px;">TradingChango</div>
+    </div>
+    <div class="header-actions">
+        <!-- AGREGAMOS LA CAMPANA AQUÍ ADENTRO -->
+        <button class="pv-alert-btn" id="pv-alert-btn" onclick="toggleAlertUI()">
+            <i class="fa-regular fa-bell"></i>
+        </button>
+        <button class="pv-fav-btn" id="pv-fav-btn">
+            <i class="fa-solid fa-cart-shopping"></i>
+        </button>
+        <button class="pv-share-btn" id="pv-share-btn">
+            <i class="fa-solid fa-arrow-up-from-bracket"></i>
+        </button>
+    </div>
+</div>
+          <div class="pv-content">
                 <div class="pv-top-info">
                     <!-- MODIFICADO: Imagen ahora a la izquierda -->
                     <div class="pv-img-container" id="pv-img-wrap">
