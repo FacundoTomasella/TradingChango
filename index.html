@@ -13,7 +13,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#ffffff">
-    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <title>TradingChango | Tradeá los Precios, Maximizá el Carrito</title>
     <meta name="description" content="Comparador de precios de supermercados en tiempo real. Analizá tendencias y compará antes de comprar.">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>">
@@ -488,7 +488,6 @@
 
     <div class="app-container">
         <header>
-          <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
             <div class="top-row">
                 <a class="logo-link" onclick="setTab('home')"><div class="logo"><div class="logo-icon-wrapper"><i class="fa-solid fa-cart-shopping"></i><i class="fa-solid fa-arrow-trend-up"></i></div>TradingChango</div></a>
                 <div class="header-actions">
@@ -625,49 +624,57 @@ async function signIn() {
     }
 }
      
-    const SUPABASE_URL = 'https://uginrayldvkhgodvfhta.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnaW5yYXlsZHZraGdvZHZmaHRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYwODEzMzcsImV4cCI6MjA4MTY1NzMzN30.hRp7YjVymPnsqbwh8dJjfgKFg77cdd0A5o-ETWYgeiw';
-    const MONTHS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+ // 1. CONFIGURACIÓN Y CLIENTE SUPABASE
+const SUPABASE_URL = 'https://uginrayldvkhgodvfhta.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnaW5yYXlsZHZraGdvZHZmaHRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYwODEzMzcsImV4cCI6MjA4MTY1NzMzN30.hRp7YjVymPnsqbwh8dJjfgKFg77cdd0A5o-ETWYgeiw';
+const MONTHS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 
-    // 1. Reemplazá tu línea de declaración por estas:
+// CORRECCIÓN: Usar el objeto global 'supabase' de la librería CDN para crear el cliente
+const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
+// 2. VARIABLES GLOBALES
 let flatList = [], currentTab = 'home', currentTrendFilter = null, openId = null, configDB = {}, currentChart = null;
+let currentUser = null; 
 
-// Inicialización limpia de favoritos como OBJETO
+// 3. INICIALIZACIÓN DE FAVORITOS (OBJETO PARA CANTIDADES)
 let favorites = JSON.parse(localStorage.getItem('fav_tickers')) || {};
 if (Array.isArray(favorites)) { 
-    favorites = {}; // Si era un array viejo, lo reseteamos a objeto vacío
+    // Conversión de formato viejo (Array) a nuevo (Objeto)
+    let newFavs = {};
+    favorites.forEach(id => newFavs[id] = 1);
+    favorites = newFavs;
     localStorage.setItem('fav_tickers', JSON.stringify(favorites));
 }
-    // Diccionario de páginas estáticas para reconocerlas en la URL
-    const paginasEstaticas = {
-        'acerca_de': 'Acerca de',
-        'terminos': 'Términos',
-        'contacto': 'Contacto'
-    };
 
-    // Función para generar URLs limpias
-    const getSlug = (name) => name.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+const paginasEstaticas = {
+    'acerca_de': 'Acerca de',
+    'terminos': 'Términos',
+    'contacto': 'Contacto'
+};
 
-   async function init() {
+const getSlug = (name) => name.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+
+// 4. FUNCIÓN INIT (CARGA DE DATOS)
+async function init() {
+    console.log("Iniciando TradingChango...");
     try {
-        // 1. Iniciar Autenticación (se encarga de ver si el usuario ya está logueado)
-        if (typeof initAuth === 'function') initAuth();
+        // Iniciar Autenticación (Si existe la función)
+        if (typeof initAuth === 'function') await initAuth();
 
-        // 2. Cargar Configuración (Legales, etc)
+        // Cargar Configuración
         const resC = await fetch(`${SUPABASE_URL}/rest/v1/configuracion?select=*`, { 
             headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` } 
         });
         const configRows = await resC.json();
         configRows.forEach(row => configDB[row.clave] = row.valor);
 
-        // 3. Cargar Productos
+        // Cargar Productos
         const res = await fetch(`${SUPABASE_URL}/rest/v1/productos?select=*`, { 
             headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` } 
         });
         const rows = await res.json();
         
-        // 4. Cargar Historial (últimos 7 días)
+        // Cargar Historial
         const d7 = new Date(); d7.setDate(d7.getDate() - 7);
         const resH = await fetch(`${SUPABASE_URL}/rest/v1/historial_precios?fecha=gte.${d7.toISOString().split('T')[0]}`, { 
             headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` } 
@@ -696,97 +703,62 @@ if (Array.isArray(favorites)) {
         document.getElementById('loader').style.display = 'none';
         updateCartBadge();
 
-        // --- LÓGICA DE RUTAS Y RENDER ---
+        // Manejo de Rutas
         const path = window.location.pathname.split('/').filter(p => p !== "");
-
         if (paginasEstaticas[path[0]]) {
             openPage(path[0], paginasEstaticas[path[0]], false);
-        } 
-        else if (path.length >= 2) {
-            const itemEncontrado = flatList.find(i => getSlug(i.n) === path[1]);
-            if (itemEncontrado) openProductView(itemEncontrado.id, false);
+        } else if (path.length >= 2) {
+            const item = flatList.find(i => getSlug(i.n) === path[1]);
+            if (item) openProductView(item.id, false);
             else goHome();
-        } 
-        else if (path.length === 1 && path[0] !== 'index.html') {
-            setTab(path[0], null, false);
-        } 
-        else {
-            goHome(); // Esto ya ejecuta renderView()
+        } else {
+            goHome();
         }
 
-        // --- MANEJO DEL BOTÓN ATRÁS ---
-        window.onpopstate = (e) => {
-            const p = window.location.pathname.split('/').filter(x => x !== "");
-            if (paginasEstaticas[p[0]]) {
-                openPage(p[0], paginasEstaticas[p[0]], false);
-            } 
-            else if (p.length >= 2) {
-                const itemPop = flatList.find(i => getSlug(i.n) === p[1]);
-                if (itemPop) openProductView(itemPop.id, false);
-            } 
-            else {
-                document.getElementById('pageView').classList.remove('active');
-                document.getElementById('productFullView').style.display = 'none';
-                document.body.style.overflow = 'auto';
-                setTab(p[0] || 'home', null, false);
-            }
-        };
+        window.onpopstate = handlePopState;
 
     } catch (e) { 
         console.error("Error crítico en init:", e);
-        document.getElementById('loader').innerText = "ERROR AL CARGAR DATOS";
+        const loader = document.getElementById('loader');
+        if (loader) loader.innerText = "ERROR DE CONEXIÓN";
     }
 }
-    function goHome() {
-        currentTab = 'home'; currentTrendFilter = null;
-        document.getElementById('tickerList').style.display = 'block';
-        document.getElementById('pageView').classList.remove('active');
-        document.getElementById('searchBarSection').style.display = 'block';
-        document.getElementById('heroSection').style.display = 'block';
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        const btnHome = document.getElementById('btn-home');
-        if(btnHome) btnHome.classList.add('active');
-        window.scrollTo(0,0);
-        renderView();
-    }
 
-    function clearInput() {
-        const input = document.getElementById('searchInput');
-        input.value = '';
-        input.focus();
-        renderView();
-    }
+// 5. NAVEGACIÓN
+function goHome() {
+    currentTab = 'home'; 
+    currentTrendFilter = null;
+    const tickerList = document.getElementById('tickerList');
+    if (tickerList) tickerList.style.display = 'block';
+    
+    document.getElementById('pageView').classList.remove('active');
+    document.getElementById('searchBarSection').style.display = 'block';
+    document.getElementById('heroSection').style.display = 'block';
+    
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const btnHome = document.getElementById('btn-home');
+    if(btnHome) btnHome.classList.add('active');
+    
+    window.scrollTo(0,0);
+    renderView();
+}
 
-    function setTab(t, btn, pushState = true) { 
-        goHome(); 
-        currentTab = t; 
-        if (pushState) {
-            const nuevaUrl = t === 'home' ? '/' : `/${t.toLowerCase()}`;
-            history.pushState({tab: t}, '', nuevaUrl);
-        }
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); 
-        const target = btn || document.getElementById('btn-' + t);
-        if(target) target.classList.add('active'); 
-        renderView(); 
-    }
-
-    function openProductView(id, pushState = true) {
+// 6. VISTA DE PRODUCTO (MODAL)
+function openProductView(id, pushState = true) {
     const item = flatList.find(i => i.id == id);
     if (!item) return;
     openId = id;
 
-    // 1. Manejo de Historial/URL
     if (pushState) {
         const slug = getSlug(item.n);
         const categoria = (item.cat || 'varios').toLowerCase().trim();
         history.pushState({ p: id }, '', `/${categoria}/${slug}`);
     }
 
-    // 2. Cálculo de estadísticas
     const stats = getStats(item.p, item.h7d);
     document.getElementById('pv-name').innerText = item.n;
 
-    // 3. Imagen del producto
+    // Imagen
     const imgWrap = document.getElementById('pv-img-wrap');
     const imgEl = document.getElementById('pv-img');
     if (item.img) {
@@ -796,7 +768,7 @@ if (Array.isArray(favorites)) {
         imgWrap.style.display = 'none';
     }
 
-    // 4. Mejores Precios y Promedio
+    // Precios
     const stores = ["COTO", "CARREFOUR", "DIA", "JUMBO"];
     document.getElementById('pv-best-store').innerText = `Mejor precio hoy en ${stores[item.p.indexOf(stats.min)]}`;
     document.getElementById('pv-price-big').innerText = `$ ${format(stats.min)}`;
@@ -805,41 +777,38 @@ if (Array.isArray(favorites)) {
     const promedio = preciosDisponibles.length > 0 ? (preciosDisponibles.reduce((a, b) => a + b, 0) / preciosDisponibles.length) : 0;
     document.getElementById('pv-avg-price').innerText = `$ ${format(Math.round(promedio))}`;
 
-    // 5. Lógica del Botón Favoritos (Ahora chequea si la propiedad existe en el objeto)
+    // Botón Favoritos (Check Objeto)
     const favBtn = document.getElementById('pv-fav-btn');
-    const isFav = !!favorites[item.id]; // Doble negación para convertir a booleano
+    const isFav = favorites[item.id] !== undefined;
     favBtn.style.color = isFav ? 'var(--star-gold)' : 'var(--text-main)';
 
     favBtn.onclick = () => {
         toggleFav(item.id, null);
-        // Actualizamos solo el icono para que el gráfico no se reinicie
-        const nowFav = !!favorites[item.id];
+        const nowFav = favorites[item.id] !== undefined;
         favBtn.style.color = nowFav ? 'var(--star-gold)' : 'var(--text-main)';
         if (currentTab === 'favs') renderView();
     };
 
-    // 6. Render de la lista de mercados
     document.getElementById('pv-market-list').innerHTML = renderMarket(item, stats.min);
 
-    // 7. Mostrar el Modal (Flex en PC para centrar, Block en Móvil)
+    // Modal UI (PC vs Móvil)
     const view = document.getElementById('productFullView');
     view.style.display = (window.innerWidth >= 1024) ? 'flex' : 'block';
     document.body.style.overflow = 'hidden';
 
-    // 8. Reiniciar filtros de gráfico y cargar datos
+    // Gráfico
     document.querySelectorAll('#pv-range-filters .range-btn').forEach(b => b.classList.remove('active'));
-    const firstBtn = document.querySelector('#pv-range-filters .range-btn:first-child');
-    if (firstBtn) firstBtn.classList.add('active');
+    const firstRange = document.querySelector('#pv-range-filters .range-btn:first-child');
+    if (firstRange) firstRange.classList.add('active');
     
     loadPvChart(7);
 
-    // 9. Botón compartir
+    // Compartir
     document.getElementById('pv-share-btn').onclick = async () => {
         const shareData = { title: 'TradingChango', text: `Mirá el precio de ${item.n}`, url: window.location.href };
         try {
-            if (navigator.share) {
-                await navigator.share(shareData);
-            } else {
+            if (navigator.share) await navigator.share(shareData);
+            else {
                 await navigator.clipboard.writeText(window.location.href);
                 alert('¡Link copiado!');
             }
