@@ -375,12 +375,32 @@
 </div>
 
 <style>
+<style>
+    /* Color de texto por defecto (Modo Claro - Fondo oscuro) */
+    #pwaPill {
+        color: #ffffff;
+    }
+
+    /* Color de texto en Modo Oscuro (Fondo blanco) */
+    .dark-mode #pwaPill {
+        color: #000000 !important;
+    }
+
+    /* Asegura que el icono de cerrar (X) también cambie */
+    .dark-mode #pwaPill span {
+        color: #000000;
+    }
+
     @keyframes slideUp {
         from { bottom: -50px; opacity: 0; }
         to { bottom: 85px; opacity: 1; }
     }
+
     /* Si ya está instalada, no se muestra nunca */
-    @media (display-mode: standalone) { #pwaPill { display: none !important; } }
+    @media (display-mode: standalone) { 
+        #pwaPill { display: none !important; } 
+    }
+</style>
 </style>
 </div>
     <div id="productFullView">
