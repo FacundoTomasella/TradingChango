@@ -604,14 +604,24 @@ flatList = rows.map(r => {
         n: r.nombre.trim(), 
         cat: r.categoria, 
         ticker: t,
-        // Agregamos p_masonline al final del array de precios (posición 4)
-        p: [r.p_coto||0, r.p_carrefour||0, r.p_dia||0, r.p_jumbo||0, r.p_masonline||0],
-        // Agregamos url_masonline al final del array de URLs (posición 4)
-        urls: [r.url_coto||'#', r.url_carrefour||'#', r.url_dia||'#', r.url_jumbo||'#', r.url_masonline||'#'],
+        p: [
+            r.p_coto || 0, 
+            r.p_carrefour || 0, 
+            r.p_dia || 0, 
+            r.p_jumbo || 0, 
+            r.p_masonline || 0
+        ],
+        urls: [
+            r.url_coto || '#', 
+            r.url_carrefour || '#', 
+            r.url_dia || '#', 
+            r.url_jumbo || '#', 
+            r.url_masonline || '#'
+        ],
         h7d: h7.length > 0 ? h7[0].precio_minimo : 0,
         img: r.imagen_url
-    }
-});           
+    }; // <--- Asegurate de que este punto y coma esté aquí
+});
           document.getElementById('loader').style.display = 'none';
             updateCartBadge();
 
@@ -1050,7 +1060,7 @@ flatList = rows.map(r => {
     });
 }
 function renderChangoSummary(container, items) {
-    const totals = [0, 0, 0, 0, 0]; // Cambiamos a 5 ceros
+    const totals = [0, 0, 0, 0, 0]; 
     items.forEach(item => {
         const qty = favorites[item.id] || 1;
         item.p.forEach((val, idx) => {
@@ -1066,7 +1076,6 @@ function renderChangoSummary(container, items) {
     
     let html = `<div class="pv-market-title" style="font-weight:800; color:var(--text-main);">Tu Chango (Total)</div>`;
     
-    // Agregamos MasOnline a la lista de nombres
     const storeNames = ["Coto", "Carrefour", "Dia", "Jumbo", "MasOnline"];
     
     storeNames.forEach((n, i) => {
@@ -1080,10 +1089,8 @@ function renderChangoSummary(container, items) {
     
     summaryDiv.innerHTML = html;
     container.appendChild(summaryDiv);
-}    
-    summaryDiv.innerHTML = html;
-    container.appendChild(summaryDiv);
 }
+     
 function renderEmptyCart(container) {
     const emptyMsg = document.createElement('div');
     emptyMsg.className = 'empty-cart-message'; // Mejor usar clases CSS
@@ -1109,14 +1116,14 @@ function renderEmptyCart(container) {
         {name: "CARREFOUR", color: "#2962ff"},
         {name: "DIA", color: "#ff3b30"},
         {name: "JUMBO", color: "#00c853"},
-        {name: "MAS ONLINE", color: "#005cb9"} // Nuevo color azul para MasOnline
+        {name: "MAS ONLINE", color: "#005cb9"}
     ];
 
     return STORES.map((s, i) => { 
         const p = item.p[i];
         const url = item.urls[i];
         
-        if (p === 0) return `
+        if (!p || p === 0) return `
             <div class="ob-row" style="opacity:0.5;">
                 <div class="ob-store"><div class="dot" style="background:#444"></div>${s.name}</div>
                 <span class="price-link no-price">N/A</span>
