@@ -1108,41 +1108,29 @@ function renderEmptyCart(container) {
         {name: "COTO", color: "#ff3b30"},
         {name: "CARREFOUR", color: "#2962ff"},
         {name: "DIA", color: "#ff3b30"},
-        {name: "JUMBO", color: "#00c853"}
-        {name: "MAS ONLINE", color: "#00c853"}
+        {name: "JUMBO", color: "#00c853"},
+        {name: "MAS ONLINE", color: "#005cb9"} // Nuevo color azul para MasOnline
     ];
 
     return STORES.map((s, i) => { 
         const p = item.p[i];
-        const url = item.urls ? item.urls[i] : '#'; // Obtenemos la URL guardada
+        const url = item.urls[i];
         
-        // Si no hay precio, mostramos un estado desactivado
-        if (p === 0) {
-            return `
-                <div class="ob-row" style="opacity: 0.5;">
-                    <div class="ob-store">
-                        <div class="dot" style="background:#444"></div>
-                        ${s.name}
-                    </div>
-                    <span class="price-link no-price">N/A</span>
-                </div>`;
-        }
+        if (p === 0) return `
+            <div class="ob-row" style="opacity:0.5;">
+                <div class="ob-store"><div class="dot" style="background:#444"></div>${s.name}</div>
+                <span class="price-link no-price">N/A</span>
+            </div>`;
 
-        // Si hay precio, creamos el link real
         return `
             <div class="ob-row">
                 <div class="ob-store">
-                    <div class="dot" style="background:${s.color}"></div>
-                    ${s.name}
+                    <div class="dot" style="background:${s.color}"></div>${s.name}
                 </div>
-               <a href="${url}" 
-               target="_blank" 
-               rel="noopener" 
-               onclick="trackMarketClick('${s.name}', '${item.n}')" 
-               class="price-link ${p===min?'best-val':''}">
-               $${format(p)}
-            </a>
-        </div>`;
+                <a href="${url}" target="_blank" rel="noopener" class="price-link ${p === min ? 'best-val' : ''}">
+                    $${format(p)}
+                </a>
+            </div>`; 
     }).join('');
 }
     function setTrendFilter(t) { currentTrendFilter = (currentTrendFilter === t) ? null : t; document.getElementById('btnUp').classList.toggle('active-up', currentTrendFilter === 'up'); document.getElementById('btnDown').classList.toggle('active-down', currentTrendFilter === 'down'); renderView(); }
