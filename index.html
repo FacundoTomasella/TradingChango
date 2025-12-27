@@ -1050,11 +1050,11 @@ flatList = rows.map(r => {
     });
 }
 function renderChangoSummary(container, items) {
-    const totals = [0, 0, 0, 0, 0];
+    const totals = [0, 0, 0, 0, 0]; // Cambiamos a 5 ceros
     items.forEach(item => {
-        const qty = favorites[item.id] || 1; // Obtenemos la cantidad
+        const qty = favorites[item.id] || 1;
         item.p.forEach((val, idx) => {
-            if (val > 0) totals[idx] += (val * qty); // Multiplicamos por cantidad
+            if (val > 0) totals[idx] += (val * qty);
         });
     });
 
@@ -1065,17 +1065,22 @@ function renderChangoSummary(container, items) {
     summaryDiv.className = 'chango-summary';
     
     let html = `<div class="pv-market-title" style="font-weight:800; color:var(--text-main);">Tu Chango (Total)</div>`;
-    const markets = ["Coto", "Carrefour", "Dia", "Jumbo", "MasOnline"];
     
-    markets.forEach((name, i) => {
+    // Agregamos MasOnline a la lista de nombres
+    const storeNames = ["Coto", "Carrefour", "Dia", "Jumbo", "MasOnline"];
+    
+    storeNames.forEach((n, i) => {
         const isBest = totals[i] === minTotal && minTotal > 0;
         html += `
             <div class="chango-row ${isBest ? 'best' : ''}">
-                <span>${name}</span>
+                <span>${n}</span>
                 <span>$ ${format(totals[i])}</span>
             </div>`;
     });
     
+    summaryDiv.innerHTML = html;
+    container.appendChild(summaryDiv);
+}    
     summaryDiv.innerHTML = html;
     container.appendChild(summaryDiv);
 }
